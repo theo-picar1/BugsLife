@@ -1,33 +1,33 @@
 #include "Board.h"
+#include <iostream>
 
-void initializeBoard(vector<Crawler*> &bcrawlers) {
+Board::Board(const vector<Crawler*> &Crawlers) {
+    Crawler_vector = Crawlers;
+}
+
+void Board::initializeBoard(vector<Crawler *> &crawlerVector) {
+    Crawler_vector = crawlerVector;
+    if(Crawler_vector.empty()){
+        cout << "bug board not initialized" << endl;
+    }
+}
+
+void Board::tapBugBoard() {
 
 }
 
-void displayAllBugs() {
+void Board::displayLifeHistory() {
 
 }
 
-void findBugById() {
+void Board::displayAllCells() {
 
 }
 
-void tapBugBoard() {
+void Board::runSimulation() {
 
 }
 
-void displayLifeHistory() {
-
-}
-
-void displayAllCells() {
-
-}
-
-void runSimulation() {
-
-}
-
-void exit() {
+void Board::exit() {
 
 }
