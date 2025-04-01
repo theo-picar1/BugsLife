@@ -6,8 +6,12 @@
 #define BOARD_H
 
 #include "Crawler.h"
+#include <vector>
 
 class Board {
+    vector<Crawler*> Crawler_vector;
+
+    Board(const vector<Crawler *> &Crawlers);
 public:
     Board();
     void initializeBoard(vector<Crawler*> &bcrawlers);
