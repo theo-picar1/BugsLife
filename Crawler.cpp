@@ -64,13 +64,13 @@ bool Crawler::wayIsBlocked(Direction direction) {
 
 void Crawler::move() {
     if (!this->wayIsBlocked(Direction::NORTH)) {
-        this->direction == Direction::NORTH;
+        this->direction = Direction::NORTH;
     } else if (!this->wayIsBlocked(Direction::EAST)) {
-        this->direction == Direction::EAST;
+        this->direction = Direction::EAST;
     } else if (!this->wayIsBlocked(Direction::SOUTH)) { // TODO: Find out why this is always true
-        this->direction == Direction::SOUTH;
+        this->direction = Direction::SOUTH;
     } else if (!this->wayIsBlocked(Direction::WEST)) {
-        this->direction == Direction::WEST;
+        this->direction = Direction::WEST;
     }
 
     // Once done checking the unblocked paths, we initialise the new position

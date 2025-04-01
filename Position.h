@@ -2,9 +2,8 @@
 #define POSITION_H
 
 struct Position {
+public:
     int x, y;
-    Position();
-    Position(int x, int y);
 };
 
 #endif //POSITION_H
