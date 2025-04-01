@@ -15,6 +15,9 @@ int main()
     Board *board = new Board();
     load_data_from_file(Crawler_vector, "crawler-bugs.txt");
     board->initializeBoard(Crawler_vector);
+    cout << "Displaying all bugs" << endl;
+    board->displayAllBugs();
+    return 0;
 }
 
 void load_data_from_file(vector<Crawler *> &Crawler_vector, const string &file_name)

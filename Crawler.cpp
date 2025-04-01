@@ -26,7 +26,20 @@ Position Crawler::getPosition() const { return position; }
 
 void Crawler::setPosition(Position position) { this->position = position; }
 
-Direction Crawler::getDirection() const { return direction; }
+string Crawler::getDirection() const {
+    switch (direction) {
+        case Direction::NORTH:
+            return "North";
+        case Direction::WEST:
+            return "West";
+        case Direction::SOUTH:
+            return "South";
+        case Direction::EAST:
+            return "East";
+        default:
+            return "Unknown";
+    }
+}
 
 void Crawler::setDirection(Direction direction) { this->direction = direction; }
 

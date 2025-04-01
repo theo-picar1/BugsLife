@@ -25,7 +25,7 @@ public:
     // Getters
     int getId() const;
     Position getPosition() const;
-    Direction getDirection() const;
+    string getDirection() const;
     int getSize() const;
     bool isAlive() const;
     list<Position> getPath() const;
