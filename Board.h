@@ -16,7 +16,7 @@ public:
     Board();
     void initializeBoard(vector<Crawler*> &bcrawlers);
     void displayAllBugs();
-    void findBugById();
+    Crawler* findBugById(int id);
     void tapBugBoard();
     void displayLifeHistory();
     void displayAllCells();

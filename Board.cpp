@@ -27,8 +27,17 @@ void Board::displayAllBugs()
     }
 }
 
-void Board::findBugById()
+Crawler * Board::findBugById(int id)
 {
+    for (auto &crawler : Crawler_vector)
+    {
+        if (crawler->getId() == id)
+        { // Assuming Crawler has a getId() function
+            return crawler;
+        }
+    }
+    return nullptr; // Return nullptr if the bug is not found
+
 }
 
 void Board::tapBugBoard()

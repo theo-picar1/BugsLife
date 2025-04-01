@@ -17,6 +17,8 @@ int main()
     board->initializeBoard(Crawler_vector);
     cout << "Displaying all bugs" << endl;
     board->displayAllBugs();
+    cout << "Displaying bug by id (101)" << endl;
+    cout << board->findBugById(101)->getId() << endl;
     return 0;
 }
 
