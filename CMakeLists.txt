@@ -7,4 +7,6 @@ add_executable(Classes main.cpp
         Crawler.h
         Crawler.cpp
         Position.h
-        Direction.h)
+        Direction.h
+        Board.cpp
+        Board.h)
