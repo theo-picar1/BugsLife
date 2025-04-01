@@ -1,2 +1,7 @@
 .idea/
 cmake-build-*/
+
+# vs code
+.vscode
+main.exe
+build
