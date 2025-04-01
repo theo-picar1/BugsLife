@@ -2,6 +2,7 @@
 #define CRAWLER_H
 
 #include "Position.h"
+#include "Direction.h"
 
 #include <string>
 #include <list>
@@ -12,19 +13,19 @@ class Crawler {
 private:
     int id;
     Position position;
-    int direction;
+    Direction direction;
     int size;
     bool alive;
     list<Position> path;
 
 public:
     Crawler();
-    Crawler(int id, Position position, int direction, int size, bool alive, list<Position> path);
+    Crawler(int id, Position position, Direction direction, int size, bool alive, list<Position> path);
 
     // Getters
     int getId() const;
     Position getPosition() const;
-    int getDirection() const;
+    Direction getDirection() const;
     int getSize() const;
     bool isAlive() const;
     list<Position> getPath() const;
@@ -32,13 +33,13 @@ public:
     // Setters
     void setId(int id);
     void setPosition(Position position);
-    void setDirection(int direction);
+    void setDirection(Direction direction);
     void setSize(int size);
     void setAlive(bool alive);
     void setPath(list<Position> path);
 
     void move();
-    bool wayIsBlocked();
+    bool wayIsBlocked(Direction direction);
 };
 
 

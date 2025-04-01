@@ -1,8 +1,15 @@
 #include "Crawler.h"
 
-Crawler::Crawler() { }
+Crawler::Crawler() {
+    this->id = 0;
+    this->position = {0, 0};
+    this->direction = Direction::NORTH;
+    this->size = 0;
+    this->alive = true;
+    this->path = {};
+}
 
-Crawler::Crawler(int id, Position position, int direction, int size, bool alive, list<Position> path) {
+Crawler::Crawler(int id, Position position, Direction direction, int size, bool alive, list<Position> path) {
     this->id = id;
     this->position = position;
     this->direction = direction;
@@ -19,9 +26,9 @@ Position Crawler::getPosition() const { return position; }
 
 void Crawler::setPosition(Position position) { this->position = position; }
 
-int Crawler::getDirection() const { return direction; }
+Direction Crawler::getDirection() const { return direction; }
 
-void Crawler::setDirection(int direction) { this->direction = direction; }
+void Crawler::setDirection(Direction direction) { this->direction = direction; }
 
 int Crawler::getSize() const { return size; }
 
@@ -31,6 +38,63 @@ bool Crawler::isAlive() const { return alive; }
 
 void Crawler::setAlive(bool alive) { this->alive = alive; }
 
-std::list<Position> Crawler::getPath() const { return path; }
+list<Position> Crawler::getPath() const { return path; }
 
-void Crawler::setPath(std::list<Position> path) { this->path = path; }
+void Crawler::setPath(list<Position> path) { this->path = path; }
+
+// Wall runs around the board (10x10) from 0-11, both x and y axes
+bool Crawler::wayIsBlocked(Direction direction) {
+    // If we are currently at position 10, The way ahead is blocked as the wall runs along 11.
+    // The same for all if statements after this with minor changes to position.
+    if (direction == Direction::NORTH && this->position.y == 10) {
+        return true;
+    }
+    if (direction == Direction::WEST && this->position.x == 1) {
+        return true;
+    }
+    if (direction == Direction::SOUTH && this->position.y == 1) {
+        return true;
+    }
+    if (direction == Direction::EAST && this->position.x == 10) {
+        return true;
+    }
+
+    return false;
+}
+
+void Crawler::move() {
+    if (!this->wayIsBlocked(Direction::NORTH)) {
+        this->direction == Direction::NORTH;
+    } else if (!this->wayIsBlocked(Direction::EAST)) {
+        this->direction == Direction::EAST;
+    } else if (!this->wayIsBlocked(Direction::SOUTH)) { // TODO: Find out why this is always true
+        this->direction == Direction::SOUTH;
+    } else if (!this->wayIsBlocked(Direction::WEST)) {
+        this->direction == Direction::WEST;
+    }
+
+    // Once done checking the unblocked paths, we initialise the new position
+    Position nextPosition = this->position;
+
+    // Continue to go in the direction that the bug is going in
+    switch (this->direction) {
+        case Direction::NORTH:
+            nextPosition.y += 1;
+            break;
+
+        case Direction::EAST:
+            nextPosition.x += 1;
+            break;
+
+        case Direction::SOUTH:
+            nextPosition.y -= 1;
+            break;
+
+        case Direction::WEST:
+            nextPosition.x -= 1;
+            break;
+    }
+
+    this->position = nextPosition;
+    this->path.push_back(nextPosition);
+}

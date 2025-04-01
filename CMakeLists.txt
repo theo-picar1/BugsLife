@@ -3,4 +3,8 @@ project(Classes)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Classes main.cpp)
+add_executable(Classes main.cpp
+        Crawler.h
+        Crawler.cpp
+        Position.h
+        Direction.h)
