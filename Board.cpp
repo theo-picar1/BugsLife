@@ -22,8 +22,7 @@ void Board::displayAllBugs()
 {
     for (auto &crawler : crawlers)
     {
-        cout << "ID: " << crawler->getId() << ", Position: (" << crawler->getPosition().getX() << ", " << crawler->getPosition().getY()
-             << "), Direction: " << crawler->getDirection() << ", Size: " << crawler->getSize() << endl;
+        crawler->display();
     }
 }
 
@@ -32,7 +31,7 @@ Crawler* Board::findBugById(int id)
     for (auto &crawler : crawlers)
     {
         if (crawler->getId() == id)
-        { // Assuming Crawler has a getId() function
+        {
             return crawler;
         }
     }
@@ -54,6 +53,39 @@ void Board::tapBugBoard()
 
 void Board::displayLifeHistory()
 {
+    for(auto &crawler : crawlers) {	
+        crawler->display();
+        cout << "Path: ";
+        for (auto &position : crawler->getPath()) {
+            cout << "(" << position.x << ", " << position.y << "), ";
+        }
+
+        if(crawler->isAlive() == true) {
+            cout << "Alive" << endl;
+        }else {
+            cout << "Eaten by " << crawler->getEatenBy() << endl;
+        }
+    }
+}
+
+string Board::getLifeHistory()
+{
+    string str = "";
+    for(auto &crawler : crawlers) {	
+        str += crawler->getDisplay();
+        str += "Path: ";
+        for (auto &position : crawler->getPath()) {
+            str += "(" + to_string(position.x) + ", " + to_string(position.y) + "), ";
+        }
+
+        if(crawler->isAlive() == true) {
+            str +=  "Alive";
+        } else {
+            str += "Eaten by " + to_string(crawler->getEatenBy());
+        }
+        str += "\n\n";
+    }
+    return str;
 }
 
 void Board::displayAllCells()

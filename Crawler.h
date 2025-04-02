@@ -17,10 +17,11 @@ private:
     int size;
     bool alive;
     list<Position> path;
+    int eatenBy;
 
 public:
     Crawler();
-    Crawler(int id, Position position, Direction direction, int size, bool alive, list<Position> path);
+    Crawler(int id, Position position, Direction direction, int size, bool alive, int eatenBy);
 
     // Getters
     int getId() const;
@@ -29,6 +30,7 @@ public:
     int getSize() const;
     bool isAlive() const;
     list<Position> getPath() const;
+    int getEatenBy() const;
 
     // Setters
     void setId(int id);
@@ -37,6 +39,10 @@ public:
     void setSize(int size);
     void setAlive(bool alive);
     void setPath(list<Position> path);
+    void setEatenBy(int eatenBy);
+
+    void display();
+    string getDisplay();
 
     void move();
     bool wayIsBlocked();

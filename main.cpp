@@ -4,18 +4,22 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <fstream>
 using namespace std;
 
 void load(vector<Crawler *> &crawlers, const string &file_name);
 void parseLine(const string &line, Crawler &crawler);
+void createFileHistory(Board *board);
 
 int main()
 {
+
     vector<Crawler *> crawlers;
     Board *board = new Board();
     string fname = "crawler-bugs.txt";
 
     load(crawlers, fname);
+
     board->initializeBoard(crawlers);
 
     cout << "Displaying all bugs:" << endl;
@@ -24,9 +28,33 @@ int main()
     cout << "\nDisplaying bug by id (101)" << endl;
     cout << board->findBugById(101)->getId() << endl;
 
-    board->tapBugBoard();
+    cout << "\nDisplaying bug path\n" << endl;
+
+    board->displayLifeHistory();
+
+    for (auto i = 0; i < 10; i++)
+    {
+        board->tapBugBoard();
+    }
+
+    board->displayLifeHistory();
+
+    createFileHistory(board);
 
     return 0;
+}
+
+void createFileHistory(Board *board)
+{
+
+    // Create and open a text file
+    ofstream MyFile("bugs_life_history_date_time.out.txt");
+
+    // Write to the file
+    MyFile << board->getLifeHistory();
+
+    // Close the file
+    MyFile.close();
 }
 
 void load(vector<Crawler *> &crawlers, const string &fname)
@@ -56,34 +84,27 @@ void load(vector<Crawler *> &crawlers, const string &fname)
 
 void parseLine(const string &line, Crawler &crawler)
 {
-    string temp;
+    string id, x, y, size, direction, temp;
     Position position;
-    Direction direction;
     stringstream ss(line);
-    pair<int, int> pos(0,0);
 
     // skip over type of crawler for now
     getline(ss, temp, ',');
 
     // get id
-    getline(ss, temp, ',');
-    crawler.setId(stoi(temp));
+    getline(ss, id, ',');
 
-    // set up position
-    getline(ss, temp, ',');
-    position.x = stoi(temp);
+    //get up x and y position
+    getline(ss, x, ',');
 
-    getline(ss, temp, ',');
-    position.y = stoi(temp);
+    getline(ss, y, ',');
 
-    crawler.setPosition(position);
-
-    // set up direction
-    getline(ss, temp, ',');
-    direction = static_cast<Direction>(stoi(temp));
-    crawler.setDirection(direction);
+    // get direction
+    getline(ss, direction, ',');
 
     // get size
-    getline(ss, temp, ',');
-    crawler.setSize(stoi(temp));
+    getline(ss, size, ',');
+
+    // make crawler
+    crawler = Crawler(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
 }
