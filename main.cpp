@@ -24,6 +24,8 @@ int main()
     cout << "\nDisplaying bug by id (101)" << endl;
     cout << board->findBugById(101)->getId() << endl;
 
+    board->tapBugBoard();
+
     return 0;
 }
 

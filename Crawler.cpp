@@ -1,5 +1,7 @@
 #include "Crawler.h"
 
+#include <random>
+
 Crawler::Crawler() {
     this->id = 0;
     this->position = {0, 0};
@@ -55,59 +57,76 @@ list<Position> Crawler::getPath() const { return path; }
 
 void Crawler::setPath(list<Position> path) { this->path = path; }
 
-// Wall runs around the board (10x10) from 0-11, both x and y axes
-bool Crawler::wayIsBlocked(Direction direction) {
-    // If we are currently at position 10, The way ahead is blocked as the wall runs along 11.
+// Anything below 0 or over 9 is considered out of bounds
+bool Crawler::wayIsBlocked() {
+    // If we are currently at position 9, The way ahead is blocked as outer bounds runs along 10.
     // The same for all if statements after this with minor changes to position.
-    if (direction == Direction::NORTH && this->position.y == 10) {
+    if (direction == Direction::NORTH && this->position.y == 9) {
         return true;
     }
-    if (direction == Direction::WEST && this->position.x == 1) {
+    if (direction == Direction::WEST && this->position.x == 0) {
         return true;
     }
-    if (direction == Direction::SOUTH && this->position.y == 1) {
+    if (direction == Direction::SOUTH && this->position.y == 0) {
         return true;
     }
-    if (direction == Direction::EAST && this->position.x == 10) {
+    if (direction == Direction::EAST && this->position.x == 9) {
         return true;
     }
 
     return false;
 }
 
+
 void Crawler::move() {
-    if (!this->wayIsBlocked(Direction::NORTH)) {
-        this->direction = Direction::NORTH;
-    } else if (!this->wayIsBlocked(Direction::EAST)) {
-        this->direction = Direction::EAST;
-    } else if (!this->wayIsBlocked(Direction::SOUTH)) { // TODO: Find out why this is always true
-        this->direction = Direction::SOUTH;
-    } else if (!this->wayIsBlocked(Direction::WEST)) {
-        this->direction = Direction::WEST;
+    if (this->wayIsBlocked()) {
+        // Reference: https://en.cppreference.com/w/cpp/numeric/random/uniform_int_distribution
+        random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution<> distrib(1, 4);
+
+        // distrib(gen) is the produced random number between 1 and 4 inclusive
+        switch (distrib(gen)) {
+            case 1:
+                this->direction = Direction::NORTH;
+                break;
+            case 2:
+                this->direction = Direction::WEST;
+                break;
+            case 3:
+                this->direction = Direction::SOUTH;
+                break;
+            case 4:
+                this->direction = Direction::EAST;
+                break;
+        }
+
+        this->move();
     }
+    else {
+        // Once done checking the unblocked paths, we initialise the new position with the current position
+        Position nextPosition = this->position;
 
-    // Once done checking the unblocked paths, we initialise the new position
-    Position nextPosition = this->position;
+        // Continue to go in the direction that the bug is going in
+        switch (this->direction) {
+            case Direction::NORTH:
+                nextPosition.y++;
+                break;
 
-    // Continue to go in the direction that the bug is going in
-    switch (this->direction) {
-        case Direction::NORTH:
-            nextPosition.y += 1;
-            break;
+            case Direction::EAST:
+                nextPosition.x++;
+                break;
 
-        case Direction::EAST:
-            nextPosition.x += 1;
-            break;
+            case Direction::SOUTH:
+                nextPosition.y--;
+                break;
 
-        case Direction::SOUTH:
-            nextPosition.y -= 1;
-            break;
+            case Direction::WEST:
+                nextPosition.x--;
+                break;
+        }
 
-        case Direction::WEST:
-            nextPosition.x -= 1;
-            break;
+        this->position = nextPosition;
+        this->path.push_back(nextPosition);
     }
-
-    this->position = nextPosition;
-    this->path.push_back(nextPosition);
 }

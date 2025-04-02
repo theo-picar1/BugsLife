@@ -39,7 +39,7 @@ public:
     void setPath(list<Position> path);
 
     void move();
-    bool wayIsBlocked(Direction direction);
+    bool wayIsBlocked();
 };
 
 
