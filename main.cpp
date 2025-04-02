@@ -6,28 +6,32 @@
 #include <sstream>
 using namespace std;
 
-void load_data_from_file(vector<Crawler *> &Crawler_vector, const string &file_name);
+void load(vector<Crawler *> &crawlers, const string &file_name);
 void parseLine(const string &line, Crawler &crawler);
 
 int main()
 {
-    vector<Crawler *> Crawler_vector;
+    vector<Crawler *> crawlers;
     Board *board = new Board();
-    load_data_from_file(Crawler_vector, "crawler-bugs.txt");
-    board->initializeBoard(Crawler_vector);
+    string fname = "crawler-bugs.txt";
+
+    load(crawlers, fname);
+    board->initializeBoard(crawlers);
+
     cout << "Displaying all bugs" << endl;
     board->displayAllBugs();
+
     cout << "Displaying bug by id (101)" << endl;
     cout << board->findBugById(101)->getId() << endl;
+
     return 0;
 }
 
-void load_data_from_file(vector<Crawler *> &Crawler_vector, const string &file_name)
+void load(vector<Crawler *> &crawlers, const string &fname)
 {
-    string fname = "crawler-bugs.txt";
     ifstream fin(fname);
 
-    // if file was not found either due to no file found or inccorect path
+    // if file was not found either due to no file found or incorrect path
     if (!fin)
     {
         cout << "Error opening file: " << fname << endl;
@@ -42,7 +46,7 @@ void load_data_from_file(vector<Crawler *> &Crawler_vector, const string &file_n
         Crawler *crawler = new Crawler();
         parseLine(line, *crawler);
         // push back the crawler into the vector
-        Crawler_vector.push_back(crawler);
+        crawlers.push_back(crawler);
     }
 
     fin.close();

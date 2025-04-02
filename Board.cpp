@@ -1,26 +1,26 @@
 #include "Board.h"
 #include <iostream>
 
-Board::Board() : Crawler_vector() {}
+Board::Board() : crawlers() {}
 
 Board::Board(const vector<Crawler *> &Crawlers)
 {
-    Crawler_vector = Crawlers;
+    crawlers = Crawlers;
 }
 
 // Occupy the 10x10 board with Bugs from bug_vector
-void Board::initializeBoard(vector<Crawler *> &crawlerVector)
+void Board::initializeBoard(vector<Crawler *> &crawlers)
 {
-    Crawler_vector = crawlerVector;
-    if (Crawler_vector.empty())
+    crawlers = crawlers;
+    if (crawlers.empty())
     {
-        cout << "bug board not initialized" << endl;
+        cout << "The bug board was not initialised" << endl;
     }
 }
 
 void Board::displayAllBugs()
 {
-    for (auto &crawler : Crawler_vector)
+    for (auto &crawler : crawlers)
     {
         cout << "ID: " << crawler->getId() << ", Position: (" << crawler->getPosition().getX() << ", " << crawler->getPosition().getY()
              << "), Direction: " << crawler->getDirection() << ", Size: " << crawler->getSize() << endl;
@@ -29,7 +29,7 @@ void Board::displayAllBugs()
 
 Crawler * Board::findBugById(int id)
 {
-    for (auto &crawler : Crawler_vector)
+    for (auto &crawler : crawlers)
     {
         if (crawler->getId() == id)
         { // Assuming Crawler has a getId() function

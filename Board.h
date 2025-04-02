@@ -9,12 +9,12 @@
 #include <vector>
 
 class Board {
-    vector<Crawler*> Crawler_vector;
+    vector<Crawler*> crawlers;
 
-    Board(const vector<Crawler *> &Crawlers);
+    Board(const vector<Crawler *> &crawlers);
 public:
     Board();
-    void initializeBoard(vector<Crawler*> &bcrawlers);
+    void initializeBoard(vector<Crawler*> &crawlers);
     void displayAllBugs();
     Crawler* findBugById(int id);
     void tapBugBoard();
