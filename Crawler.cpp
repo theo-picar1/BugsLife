@@ -92,19 +92,19 @@ void Crawler::move() {
     // Continue to go in the direction that the bug is going in
     switch (this->direction) {
         case Direction::NORTH:
-            nextPosition.y += 1;
+            nextPosition.y++;
             break;
 
         case Direction::EAST:
-            nextPosition.x += 1;
+            nextPosition.x++;
             break;
 
         case Direction::SOUTH:
-            nextPosition.y -= 1;
+            nextPosition.y--;
             break;
 
         case Direction::WEST:
-            nextPosition.x -= 1;
+            nextPosition.x--;
             break;
     }
 

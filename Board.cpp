@@ -27,7 +27,7 @@ void Board::displayAllBugs()
     }
 }
 
-Crawler * Board::findBugById(int id)
+Crawler* Board::findBugById(int id)
 {
     for (auto &crawler : crawlers)
     {
@@ -42,6 +42,14 @@ Crawler * Board::findBugById(int id)
 
 void Board::tapBugBoard()
 {
+    cout << "Tapping the board..." << endl;
+
+    for (int i = 0; i < this->crawlers.size(); ++i) {
+        this->crawlers.at(i)->move();
+    }
+
+    cout << "\nNew positions:" << endl;
+    this->displayAllBugs();
 }
 
 void Board::displayLifeHistory()
