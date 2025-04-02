@@ -100,6 +100,8 @@ void Crawler::move() {
                 this->direction = Direction::EAST;
                 break;
         }
+
+        this->move();
     }
     else {
         // Once done checking the unblocked paths, we initialise the new position with the current position

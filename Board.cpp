@@ -42,13 +42,13 @@ Crawler* Board::findBugById(int id)
 
 void Board::tapBugBoard()
 {
-    cout << "Tapping the board..." << endl;
+    cout << "\nTapping the board..." << endl;
 
     for (int i = 0; i < this->crawlers.size(); ++i) {
         this->crawlers.at(i)->move();
     }
 
-    cout << "\nNew positions:" << endl;
+    cout << "New positions:" << endl;
     this->displayAllBugs();
 }
 
