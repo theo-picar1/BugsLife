@@ -3,15 +3,15 @@
 
 Board::Board() : crawlers() {}
 
-Board::Board(const vector<Crawler *> &Crawlers)
+Board::Board(const vector<Crawler *> &crawlers)
 {
-    crawlers = Crawlers;
+    this->crawlers = crawlers;
 }
 
 // Occupy the 10x10 board with Bugs from bug_vector
 void Board::initializeBoard(vector<Crawler *> &crawlers)
 {
-    crawlers = crawlers;
+    this->crawlers = crawlers;
     if (crawlers.empty())
     {
         cout << "The bug board was not initialised" << endl;

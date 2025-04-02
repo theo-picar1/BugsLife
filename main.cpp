@@ -18,10 +18,10 @@ int main()
     load(crawlers, fname);
     board->initializeBoard(crawlers);
 
-    cout << "Displaying all bugs" << endl;
+    cout << "Displaying all bugs:" << endl;
     board->displayAllBugs();
 
-    cout << "Displaying bug by id (101)" << endl;
+    cout << "\nDisplaying bug by id (101)" << endl;
     cout << board->findBugById(101)->getId() << endl;
 
     return 0;
