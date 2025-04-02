@@ -19,6 +19,7 @@ public:
     Crawler* findBugById(int id);
     void tapBugBoard();
     void displayLifeHistory();
+    string getLifeHistory();
     void displayAllCells();
     void runSimulation();
     void exit();

@@ -1,6 +1,7 @@
 #include "Crawler.h"
 
 #include <random>
+#include <iostream>
 
 Crawler::Crawler() {
     this->id = 0;
@@ -8,17 +9,21 @@ Crawler::Crawler() {
     this->direction = Direction::NORTH;
     this->size = 0;
     this->alive = true;
+    this->eatenBy = -1;
+
     this->path = {};
 }
 
-Crawler::Crawler(int id, Position position, Direction direction, int size, bool alive, list<Position> path) {
+Crawler::Crawler(int id, Position position, Direction direction, int size, bool alive, int eatenBy) {
     this->id = id;
     this->position = position;
     this->direction = direction;
     this->size = size;
     this->alive = alive;
-    this->path = path;
-}
+    this->eatenBy = eatenBy;
+
+    this->path = list<Position> {this->position};
+};
 
 int Crawler::getId() const { return id; }
 
@@ -56,6 +61,19 @@ void Crawler::setAlive(bool alive) { this->alive = alive; }
 list<Position> Crawler::getPath() const { return path; }
 
 void Crawler::setPath(list<Position> path) { this->path = path; }
+
+int Crawler::getEatenBy() const { return eatenBy; }
+
+void Crawler::setEatenBy(int eatenBy) { this->eatenBy = eatenBy; }
+
+void Crawler::display(){
+    cout << "ID: " << id << ", Position: (" << position.x << ", " << position.y
+             << "), Direction: " << this->getDirection() << ", Size: " << size << endl;
+}
+
+string Crawler::getDisplay(){
+    return "ID: " + to_string(id) + "\nPosition: (" + to_string(position.x) + ", " + to_string(position.y) + ")\nDirection: " + this->getDirection() + "\nSize: " + to_string(size) + "\n";
+}
 
 // Anything below 0 or over 9 is considered out of bounds
 bool Crawler::wayIsBlocked() {

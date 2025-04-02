@@ -5,3 +5,6 @@ cmake-build-*/
 .vscode
 main.exe
 build
+crawler-bugs.txt
+
+bugs_life_history_date_time.out.txt
