@@ -40,12 +40,25 @@ int main()
 
     createFileHistory(board);
 
-    for(auto &crawler : crawlers){
-        Cell* cell = board->getCell(crawler->getPosition().x, crawler->getPosition().y);
-        cell->addCrawler(crawler);
-    }
+    for(auto i = 0; i < 5; i++){
+        cout << "----------------------------" << endl;
 
-    board->displayBoard();
+        // move all bugs
+        board->tapBugBoard();
+
+        // add crawlers to cells
+        for(auto &crawler : crawlers){
+            Cell* cell = board->getCell(crawler->getPosition().x, crawler->getPosition().y);
+            cell->addCrawler(crawler);
+        }
+
+        cout << "\n---------- Move " << i + 1 << " ----------\n" << endl;
+        // display board (all cells)
+        board->displayBoard();
+
+        // make board have no crawlers
+        board->initializeBoard(crawlers);
+    }
 
     return 0;
 }
