@@ -9,4 +9,6 @@ add_executable(Classes main.cpp
         Position.h
         Direction.h
         Board.cpp
-        Board.h)
+        Board.h
+        Cell.cpp
+        Cell.h)
