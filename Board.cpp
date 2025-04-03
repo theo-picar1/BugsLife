@@ -16,6 +16,33 @@ void Board::initializeBoard(vector<Crawler *> &crawlers)
     {
         cout << "The bug board was not initialised" << endl;
     }
+
+    board.resize(10, vector<Cell *>(10));
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            board[i][j] = new Cell(i, j);
+        }
+    }
+}
+
+Cell *Board::getCell(int x, int y)
+{
+    return board[x][y];
+}
+
+void Board::displayBoard()
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        for (int j = 0; j < 10; ++j)
+        {
+            cout << "Cell (" << i << ", " << j << "): ";
+            board[i][j]->displayCrawlers();
+        }
+        cout << endl;
+    }
 }
 
 void Board::displayAllBugs()
@@ -26,7 +53,7 @@ void Board::displayAllBugs()
     }
 }
 
-Crawler* Board::findBugById(int id)
+Crawler *Board::findBugById(int id)
 {
     for (auto &crawler : crawlers)
     {
@@ -36,14 +63,14 @@ Crawler* Board::findBugById(int id)
         }
     }
     return nullptr; // Return nullptr if the bug is not found
-
 }
 
 void Board::tapBugBoard()
 {
     cout << "\nTapping the board..." << endl;
 
-    for (int i = 0; i < this->crawlers.size(); ++i) {
+    for (int i = 0; i < this->crawlers.size(); ++i)
+    {
         this->crawlers.at(i)->move();
     }
 
@@ -53,16 +80,21 @@ void Board::tapBugBoard()
 
 void Board::displayLifeHistory()
 {
-    for(auto &crawler : crawlers) {	
+    for (auto &crawler : crawlers)
+    {
         crawler->display();
         cout << "Path: ";
-        for (auto &position : crawler->getPath()) {
+        for (auto &position : crawler->getPath())
+        {
             cout << "(" << position.x << ", " << position.y << "), ";
         }
 
-        if(crawler->isAlive() == true) {
+        if (crawler->isAlive() == true)
+        {
             cout << "Alive" << endl;
-        }else {
+        }
+        else
+        {
             cout << "Eaten by " << crawler->getEatenBy() << endl;
         }
     }
@@ -71,16 +103,21 @@ void Board::displayLifeHistory()
 string Board::getLifeHistory()
 {
     string str = "";
-    for(auto &crawler : crawlers) {	
+    for (auto &crawler : crawlers)
+    {
         str += crawler->getDisplay();
         str += "Path: ";
-        for (auto &position : crawler->getPath()) {
+        for (auto &position : crawler->getPath())
+        {
             str += "(" + to_string(position.x) + ", " + to_string(position.y) + "), ";
         }
 
-        if(crawler->isAlive() == true) {
-            str +=  "Alive";
-        } else {
+        if (crawler->isAlive() == true)
+        {
+            str += "Alive";
+        }
+        else
+        {
             str += "Eaten by " + to_string(crawler->getEatenBy());
         }
         str += "\n\n";
