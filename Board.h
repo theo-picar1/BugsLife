@@ -6,9 +6,12 @@
 #define BOARD_H
 
 #include "Crawler.h"
+#include "Cell.h"
 #include <vector>
 
 class Board {
+    vector<vector<Cell*>> board;
+
     vector<Crawler*> crawlers;
 
     Board(const vector<Crawler *> &crawlers);
@@ -23,6 +26,9 @@ public:
     void displayAllCells();
     void runSimulation();
     void exit();
+
+    void displayBoard();
+    Cell *getCell(int x, int y);
     
 };
 

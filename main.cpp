@@ -7,18 +7,17 @@
 #include <fstream>
 using namespace std;
 
-void load(vector<Crawler *> &crawlers, const string &file_name);
+void load(vector<Crawler *> &crawlers, const string &file_name, Board *board);
 void parseLine(const string &line, Crawler &crawler);
 void createFileHistory(Board *board);
 
 int main()
 {
-
     vector<Crawler *> crawlers;
     Board *board = new Board();
     string fname = "crawler-bugs.txt";
 
-    load(crawlers, fname);
+    load(crawlers, fname, board);
 
     board->initializeBoard(crawlers);
 
@@ -41,6 +40,13 @@ int main()
 
     createFileHistory(board);
 
+    for(auto &crawler : crawlers){
+        Cell* cell = board->getCell(crawler->getPosition().x, crawler->getPosition().y);
+        cell->addCrawler(crawler);
+    }
+
+    board->displayBoard();
+
     return 0;
 }
 
@@ -57,7 +63,7 @@ void createFileHistory(Board *board)
     MyFile.close();
 }
 
-void load(vector<Crawler *> &crawlers, const string &fname)
+void load(vector<Crawler *> &crawlers, const string &fname, Board *board)
 {
     ifstream fin(fname);
 
@@ -94,7 +100,7 @@ void parseLine(const string &line, Crawler &crawler)
     // get id
     getline(ss, id, ',');
 
-    //get up x and y position
+    // get up x and y position
     getline(ss, x, ',');
 
     getline(ss, y, ',');
