@@ -161,12 +161,36 @@ string Board::getLifeHistory()
     return str;
 }
 
-void Board::displayAllCells()
-{
-}
-
+// Method that will constantly tap, update and display the board until there is one bug left standing
 void Board::runSimulation()
 {
+    int leftAlive = 0;
+
+    // Keep going as long as there are more than one bug alive
+    while (leftAlive != 1)
+    {
+        tapBugBoard();
+
+        // Reset the counter and then count again in for loop below
+        leftAlive = 0;
+
+        for (auto &crawler : crawlers)
+        {
+            if (crawler->isAlive())
+            {
+                leftAlive++;
+            }
+        }
+    }
+
+    // Print the winner, who is the only remaining alive bug
+    for (auto &crawler : crawlers)
+    {
+        if (crawler->isAlive())
+        {
+            cout << "The winner is Bug ID: " << crawler->getId() << " with size: " << crawler->getSize() << endl;
+        }
+    }
 }
 
 void Board::exit()
