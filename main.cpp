@@ -20,6 +20,7 @@ int main() {
 
     load(crawlers, fname, board); // Get all crawlers from the file first
     board->initializeBoard(crawlers); // Then initialise the board with the crawlers
+    board->updateCells(); // Then add the crawlers to their corresponding cells
 
     cout << "***** BUGS LIFE SIMULATOR *****" << endl;
 
