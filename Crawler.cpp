@@ -145,6 +145,6 @@ void Crawler::move() {
         }
 
         this->position = nextPosition;
-        this->path.push_back(nextPosition);
+        this->path.push_back(nextPosition); // Push the new position onto path for the bug's life history
     }
 }

@@ -48,7 +48,10 @@ int main()
 
         // add crawlers to cells
         for(auto &crawler : crawlers){
+            // Get the cell that is equal to the current crawler's i and j position
             Cell* cell = board->getCell(crawler->getPosition().x, crawler->getPosition().y);
+
+            // Then add that crawler to the cell object
             cell->addCrawler(crawler);
         }
 

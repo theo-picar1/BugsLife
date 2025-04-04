@@ -8,26 +8,31 @@ Board::Board(const vector<Crawler *> &crawlers)
     this->crawlers = crawlers;
 }
 
-// Occupy the 10x10 board with Bugs from bug_vector
+// Occupy the 10x10 board with Bugs from bug_vector (assuming it is not empty)
 void Board::initializeBoard(vector<Crawler *> &crawlers)
 {
     this->crawlers = crawlers;
+
     if (crawlers.empty())
     {
-        cout << "The bug board was not initialised" << endl;
+        cout << "There are no crawlers to initialise the board with. Please create some crawlers!" << endl;
     }
 
+    // Creates a board (10x10 2d vector)
     board.resize(10, vector<Cell *>(10));
+
     for (int i = 0; i < 10; i++)
     {
         for (int j = 0; j < 10; j++)
         {
+            // Create a new cell with position i and j
             board[i][j] = new Cell(i, j);
         }
     }
 }
 
-Cell *Board::getCell(int x, int y)
+// Returns a pointer to the memory address of board[x][y]
+Cell* Board::getCell(int x, int y)
 {
     return board[x][y];
 }
@@ -39,12 +44,13 @@ void Board::displayBoard()
         for (int j = 0; j < 10; ++j)
         {
             cout << "Cell (" << i << ", " << j << "): ";
-            board[i][j]->displayCrawlers();
+            board[i][j]->displayCrawlers(); // Display all the crawlers in that cell if any
         }
         cout << endl;
     }
 }
 
+// Display property of every bug on the board: Their id, type, position, status, etc
 void Board::displayAllBugs()
 {
     for (auto &crawler : crawlers)
@@ -71,13 +77,14 @@ void Board::tapBugBoard()
 
     for (int i = 0; i < this->crawlers.size(); ++i)
     {
-        this->crawlers.at(i)->move();
+        this->crawlers.at(i)->move(); // Move functionality that is handled in the crawler class
     }
 
     cout << "New positions:" << endl;
     this->displayAllBugs();
 }
 
+// Displays life history of every bug. The path they took, who they were eaten by, their status and more...
 void Board::displayLifeHistory()
 {
     for (auto &crawler : crawlers)
@@ -100,6 +107,7 @@ void Board::displayLifeHistory()
     }
 }
 
+// Similar to displayLifeHistory(). Only difference is we append it to a string and return that string.
 string Board::getLifeHistory()
 {
     string str = "";
