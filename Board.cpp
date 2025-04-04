@@ -1,5 +1,6 @@
 #include "Board.h"
 #include <iostream>
+#include <list>
 
 Board::Board() : crawlers() {}
 
@@ -37,8 +38,27 @@ Cell* Board::getCell(int x, int y)
     return board[x][y];
 }
 
+// Code that, whenever called, will add crawlers to the cells in the board with the same depending on crawler positions
+void Board::updateCells() {
+    // Clear crawler lists from each cell to prevent stacking
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            board[i][j]->clearCrawlers();
+        }
+    }
+
+    for(auto &crawler : crawlers){
+        // Get the cell that is equal to the current crawler's i and j position
+        Cell* cell = getCell(crawler->getPosition().x, crawler->getPosition().y);
+
+        // Then add that crawler to the cell object
+        cell->addCrawler(crawler);
+    }
+}
+
 void Board::displayBoard()
 {
+
     for (int i = 0; i < 10; ++i)
     {
         for (int j = 0; j < 10; ++j)
@@ -82,6 +102,8 @@ void Board::tapBugBoard()
 
     cout << "New positions:" << endl;
     this->displayAllBugs();
+
+    updateCells();
 }
 
 // Displays life history of every bug. The path they took, who they were eaten by, their status and more...

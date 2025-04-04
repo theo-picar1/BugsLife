@@ -1,4 +1,5 @@
 #include "Crawler.h"
+#include "Board.h"
 
 #include <random>
 #include <iostream>
