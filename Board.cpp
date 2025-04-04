@@ -39,6 +39,15 @@ Cell* Board::getCell(int x, int y)
 
 void Board::displayBoard()
 {
+    // Then put all the crawlers into their corresponding cells
+    for(auto &crawler : crawlers){
+        // Get the cell that is equal to the current crawler's i and j position
+        Cell* cell = getCell(crawler->getPosition().x, crawler->getPosition().y);
+
+        // Then add that crawler to the cell object
+        cell->addCrawler(crawler);
+    }
+
     for (int i = 0; i < 10; ++i)
     {
         for (int j = 0; j < 10; ++j)
