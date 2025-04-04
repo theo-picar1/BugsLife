@@ -40,6 +40,7 @@ public:
     void setAlive(bool alive);
     void setPath(list<Position> path);
     void setEatenBy(int eatenBy);
+    void grow(int growAmount);
 
     void display();
     string getDisplay();

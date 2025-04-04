@@ -29,6 +29,7 @@ public:
     void addCrawler(Crawler* crawler);
     void displayCrawlers();
     void clearCrawlers();
+    void fightAndEat();
 };
 
 
