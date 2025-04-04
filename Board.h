@@ -23,9 +23,7 @@ public:
     void tapBugBoard();
     void displayLifeHistory();
     string getLifeHistory();
-    void displayAllCells();
     void runSimulation();
-    void exit();
     void displayBoard();
     Cell *getCell(int x, int y);
     void updateCells();

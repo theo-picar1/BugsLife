@@ -98,6 +98,8 @@ void menu(vector<Crawler *> &crawlers, Board *board) {
 
         cin >> choice;
     }
+
+    createFileHistory(board);
 }
 
 void createFileHistory(Board *board)

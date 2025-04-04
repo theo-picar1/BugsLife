@@ -192,7 +192,3 @@ void Board::runSimulation()
         }
     }
 }
-
-void Board::exit()
-{
-}
