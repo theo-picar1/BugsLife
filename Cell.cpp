@@ -48,3 +48,7 @@ void Cell::displayCrawlers()
         cout << "Empty" << endl;
     }
 }
+
+void Cell::clearCrawlers() {
+    this->crawlers.clear();
+}

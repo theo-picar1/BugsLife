@@ -25,8 +25,10 @@ public:
     void setY(int y);
     void setCrawlers(list<Crawler*> crawlers);
 
+    // Methods
     void addCrawler(Crawler* crawler);
     void displayCrawlers();
+    void clearCrawlers();
 };
 
 
