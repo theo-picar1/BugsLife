@@ -78,7 +78,8 @@ void menu(vector<Crawler *> &crawlers, Board *board) {
                 board->displayBoard();
                 break;
             case 6:
-                cout << "Run simulation" << endl;
+                cout << "Running simulation..." << endl;
+                board->runSimulation();
                 break;
             case 7:
                 cout << "Ending simulation... Done! Goodbye." << endl;
@@ -97,6 +98,8 @@ void menu(vector<Crawler *> &crawlers, Board *board) {
 
         cin >> choice;
     }
+
+    createFileHistory(board);
 }
 
 void createFileHistory(Board *board)
