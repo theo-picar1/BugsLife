@@ -7,63 +7,127 @@
 #include <fstream>
 using namespace std;
 
+// Basic methods
+void menu();
 void load(vector<Crawler *> &crawlers, const string &file_name, Board *board);
 void parseLine(const string &line, Crawler &crawler);
 void createFileHistory(Board *board);
 
-int main()
-{
-    vector<Crawler *> crawlers;
-    Board *board = new Board();
-    string fname = "crawler-bugs.txt";
+int main() {
+    menu();
+    // cout << "***** BUGS LIFE SIMULATOR *****" << endl;
+    //
+    // vector<Crawler *> crawlers;
+    // Board *board = new Board();
+    // string fname = "crawler-bugs.txt";
+    //
+    // load(crawlers, fname, board);
+    //
+    // board->initializeBoard(crawlers);
+    //
+    // cout << "Displaying all bugs:" << endl;
+    // board->displayAllBugs();
+    //
+    // cout << "\nDisplaying bug by id (101)" << endl;
+    // cout << board->findBugById(101)->getId() << endl;
+    //
+    // cout << "\nDisplaying bug path\n" << endl;
+    //
+    // board->displayLifeHistory();
+    //
+    // for (auto i = 0; i < 10; i++)
+    // {
+    //     board->tapBugBoard();
+    // }
+    //
+    // board->displayLifeHistory();
+    //
+    // createFileHistory(board);
+    //
+    // for(auto i = 0; i < 5; i++){
+    //     cout << "----------------------------" << endl;
+    //
+    //     // move all bugs
+    //     board->tapBugBoard();
+    //
+    //     // add crawlers to cells
+    //     for(auto &crawler : crawlers){
+    //         // Get the cell that is equal to the current crawler's i and j position
+    //         Cell* cell = board->getCell(crawler->getPosition().x, crawler->getPosition().y);
+    //
+    //         // Then add that crawler to the cell object
+    //         cell->addCrawler(crawler);
+    //     }
+    //
+    //     cout << "\n---------- Move " << i + 1 << " ----------\n" << endl;
+    //     // display board (all cells)
+    //     board->displayBoard();
+    //
+    //     // make board have no crawlers
+    //     board->initializeBoard(crawlers);
+    // }
+    //
+    // return 0;
+}
 
-    load(crawlers, fname, board);
+void menu() {
+    cout << "Please choose one of the following options (1-8):" << endl
+         << "1. Display all bugs" << endl
+         << "2. Display bug by id" << endl
+         << "3. Tap/Shake bug board" << endl
+         << "4. Display bug life history" << endl
+         << "5. Display board (All cells)" << endl
+         << "6. Run simulation" << endl
+         << "7. Exit" << endl;
 
-    board->initializeBoard(crawlers);
+    int choice;
+    cin >> choice;
 
-    cout << "Displaying all bugs:" << endl;
-    board->displayAllBugs();
+    while (choice != 7) {
+        switch (choice) {
+            case 1:
+                cout << "Display bugs" << endl;
+            break;
 
-    cout << "\nDisplaying bug by id (101)" << endl;
-    cout << board->findBugById(101)->getId() << endl;
+            case 2:
+                cout << "Display bug by id" << endl;
+            break;
 
-    cout << "\nDisplaying bug path\n" << endl;
+            case 3:
+                cout << "Shake" << endl;
+            break;
 
-    board->displayLifeHistory();
+            case 4:
+                cout << "Life history" << endl;
+            break;
 
-    for (auto i = 0; i < 10; i++)
-    {
-        board->tapBugBoard();
-    }
+            case 5:
+                cout << "Cells" << endl;
+            break;
 
-    board->displayLifeHistory();
+            case 6:
+                cout << "Run simulation" << endl;
+            break;
 
-    createFileHistory(board);
+            case 7:
+                cout << "Ending simulation..." << endl;
+            break;
 
-    for(auto i = 0; i < 5; i++){
-        cout << "----------------------------" << endl;
-
-        // move all bugs
-        board->tapBugBoard();
-
-        // add crawlers to cells
-        for(auto &crawler : crawlers){
-            // Get the cell that is equal to the current crawler's i and j position
-            Cell* cell = board->getCell(crawler->getPosition().x, crawler->getPosition().y);
-
-            // Then add that crawler to the cell object
-            cell->addCrawler(crawler);
+            default:
+                cout << "Invalid option. Please choose options 1-8!" << endl;
+            break;
         }
 
-        cout << "\n---------- Move " << i + 1 << " ----------\n" << endl;
-        // display board (all cells)
-        board->displayBoard();
+        cout << "\n1. Display all bugs" << endl
+             << "2. Display bug by id" << endl
+             << "3. Tap/Shake bug board" << endl
+             << "4. Display bug life history" << endl
+             << "5. Display board (All cells)" << endl
+             << "6. Run simulation" << endl
+             << "7. Exit" << endl;
 
-        // make board have no crawlers
-        board->initializeBoard(crawlers);
+        cin >> choice;
     }
-
-    return 0;
 }
 
 void createFileHistory(Board *board)
