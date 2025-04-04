@@ -53,6 +53,10 @@ void Board::updateCells() {
 
         // Then add that crawler to the cell object
         cell->addCrawler(crawler);
+
+        if (cell->getCrawlers().size() > 1) {
+            cell->fightAndEat();
+        }
     }
 }
 

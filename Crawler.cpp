@@ -149,3 +149,8 @@ void Crawler::move() {
         this->path.push_back(nextPosition); // Push the new position onto path for the bug's life history
     }
 }
+
+// Method that will increase the size of a winner bug depending on the sizes of the other bugs it has eaten
+void Crawler::grow(int growAmount) {
+    this->size += growAmount;
+}
