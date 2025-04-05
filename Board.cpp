@@ -32,36 +32,58 @@ void Board::initializeBoard(vector<Crawler *> &crawlers)
     }
 }
 
-// Returns a pointer to the memory address of board[x][y]
-Cell* Board::getCell(int x, int y)
+// Display property of every bug on the board: Their id, type, position, status, etc
+void Board::displayAllBugs()
 {
-    return board[x][y];
+    for (auto &crawler : crawlers)
+    {
+        crawler->display();
+    }
 }
 
-// Code that, whenever called, will add crawlers to the cells in the board with the same depending on crawler positions
-void Board::updateCells() {
-    // Clear crawler lists from each cell to prevent stacking
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            board[i][j]->clearCrawlers();
+// Method to find and display a with a given id
+void Board::findBugById(int id)
+{
+    bool found = false;
+
+    for (auto &crawler : crawlers)
+    {
+        if (crawler->getId() == id)
+        {
+            cout << "Bug found!" << endl;
+            crawler->display();
+            found = true;
         }
     }
 
-    for(auto &crawler : crawlers){
-        // Get the cell that is equal to the current crawler's i and j position
-        Cell* cell = getCell(crawler->getPosition().x, crawler->getPosition().y);
+    if (!found) {
+        cout << "No bug found with an ID of " << id << ". Please try again!" << endl;
+    }
+}
 
-        // Then add that crawler to the cell object
+// Method that will cause all the bugs in the board to move by 1 cell
+void Board::tapBugBoard()
+{
+    cout << "\nTAPPING THE BOARD..." << endl;
+
+    for (auto &crawler : crawlers)
+    {
         if (crawler->isAlive()) {
-            cell->addCrawler(crawler);
-        }
-
-        if (cell->getCrawlers().size() > 1) {
-            cell->fightAndEat();
+            crawler->move(); // Move functionality that is handled in the crawler class
         }
     }
+
+    cout << "NEW POSITIONS:" << endl;
+    for (auto &crawler : crawlers) {
+        if (crawler->isAlive()) {
+            crawler->display();
+        }
+    }
+
+    updateCells();
 }
 
+// Method to display all the cells with any crawlers on the board
 void Board::displayBoard()
 {
 
@@ -74,42 +96,6 @@ void Board::displayBoard()
         }
         cout << endl;
     }
-}
-
-// Display property of every bug on the board: Their id, type, position, status, etc
-void Board::displayAllBugs()
-{
-    for (auto &crawler : crawlers)
-    {
-        crawler->display();
-    }
-}
-
-Crawler *Board::findBugById(int id)
-{
-    for (auto &crawler : crawlers)
-    {
-        if (crawler->getId() == id)
-        {
-            return crawler;
-        }
-    }
-    return nullptr; // Return nullptr if the bug is not found
-}
-
-void Board::tapBugBoard()
-{
-    cout << "\nTapping the board..." << endl;
-
-    for (int i = 0; i < this->crawlers.size(); ++i)
-    {
-        this->crawlers.at(i)->move(); // Move functionality that is handled in the crawler class
-    }
-
-    cout << "New positions:" << endl;
-    this->displayAllBugs();
-
-    updateCells();
 }
 
 // Displays life history of every bug. The path they took, who they were eaten by, their status and more...
@@ -138,6 +124,7 @@ void Board::displayLifeHistory()
 // Similar to displayLifeHistory(). Only difference is we append it to a string and return that string.
 string Board::getLifeHistory()
 {
+    // All code logic here is just appending to 'str', where str is the content that will be written to the txt file
     string str = "";
     for (auto &crawler : crawlers)
     {
@@ -174,12 +161,17 @@ void Board::runSimulation()
         // Reset the counter and then count again in for loop below
         leftAlive = 0;
 
+        // Logic to count all the bugs that are still alive on the board
         for (auto &crawler : crawlers)
         {
             if (crawler->isAlive())
             {
                 leftAlive++;
             }
+        }
+
+        if (leftAlive > 1) {
+            cout << "There are currently " << leftAlive << " bugs left on the board!" << endl;
         }
     }
 
@@ -188,7 +180,49 @@ void Board::runSimulation()
     {
         if (crawler->isAlive())
         {
-            cout << "The winner is Bug ID: " << crawler->getId() << " with size: " << crawler->getSize() << endl;
+            cout << "***** WINNER IS BUG " << crawler->getId() << ", AND IS " << crawler->getSize() << " POINTS LARGE! *****" << endl;
+            cout << endl;
         }
+    }
+}
+
+// Returns a pointer to the memory address of board[x][y].
+Cell* Board::getCell(int x, int y)
+{
+    return board[x][y];
+}
+
+// Code that, whenever called, will add crawlers to the cells in the board with the same depending on crawler positions
+void Board::updateCells() {
+    // Clear crawler lists from each cell to prevent stacking
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            board[i][j]->clearCrawlers();
+        }
+    }
+
+    int fightsOccured = 0; // Just for message purposes
+    cout << "\nFIGHT LOG" << endl;
+
+    // Adding crawler to a cell and fighting logic occurs in below for loop
+    for(auto &crawler : crawlers){
+        // Get the cell that is equal to the current crawler's i and j position
+        Cell* cell = getCell(crawler->getPosition().x, crawler->getPosition().y);
+
+        // Then add that crawler to the cell object, only if it is alive
+        if (crawler->isAlive()) {
+            cell->addCrawler(crawler);
+        }
+
+        // If statement to determine if there will be a fight in a given cell or not
+        if (cell->getCrawlers().size() > 1) {
+            cout << "A FIGHT IS OCCURRING AT CELL (" << crawler->getPosition().x << ", " << crawler->getPosition().y << ")" << endl;
+            cell->fightAndEat();
+            fightsOccured++;
+        }
+    }
+
+    if (fightsOccured <= 0) {
+        cout << "No bugs have fought or eaten each other during this tap!" << endl;
     }
 }
