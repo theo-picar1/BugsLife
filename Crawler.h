@@ -1,13 +1,29 @@
 #ifndef CRAWLER_H
 #define CRAWLER_H
 
-#include "Position.h"
-#include "Direction.h"
-
 #include <string>
 #include <list>
 
 using namespace std;
+
+// 'enum class' instead of just 'enum' to prevent variables from being global
+// Will be called as Direction::North rather than just NORTH
+enum class Direction {
+    NORTH = 1,
+    WEST = 2,
+    SOUTH = 3,
+    EAST = 4
+};
+
+struct Position {
+public:
+    int x, y;
+
+    Position(int x = 0, int y = 0) : x(x), y(y) {}
+
+    int getX() { return x; }
+    int getY() { return y; }
+};
 
 class Crawler {
 private:
