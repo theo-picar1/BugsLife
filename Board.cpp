@@ -64,15 +64,21 @@ void Board::findBugById(int id)
 // Method that will cause all the bugs in the board to move by 1 cell
 void Board::tapBugBoard()
 {
-    cout << "\nTapping the board..." << endl;
+    cout << "\nTAPPING THE BOARD..." << endl;
 
-    for (int i = 0; i < this->crawlers.size(); ++i)
+    for (auto &crawler : crawlers)
     {
-        this->crawlers.at(i)->move(); // Move functionality that is handled in the crawler class
+        if (crawler->isAlive()) {
+            crawler->move(); // Move functionality that is handled in the crawler class
+        }
     }
 
-    cout << "New positions:" << endl;
-    this->displayAllBugs();
+    cout << "NEW POSITIONS:" << endl;
+    for (auto &crawler : crawlers) {
+        if (crawler->isAlive()) {
+            crawler->display();
+        }
+    }
 
     updateCells();
 }
@@ -155,12 +161,17 @@ void Board::runSimulation()
         // Reset the counter and then count again in for loop below
         leftAlive = 0;
 
+        // Logic to count all the bugs that are still alive on the board
         for (auto &crawler : crawlers)
         {
             if (crawler->isAlive())
             {
                 leftAlive++;
             }
+        }
+
+        if (leftAlive > 1) {
+            cout << "There are currently " << leftAlive << " bugs left on the board!" << endl;
         }
     }
 
@@ -169,7 +180,8 @@ void Board::runSimulation()
     {
         if (crawler->isAlive())
         {
-            cout << "The winner is Bug ID: " << crawler->getId() << " with size: " << crawler->getSize() << endl;
+            cout << "***** WINNER IS BUG " << crawler->getId() << ", AND IS " << crawler->getSize() << " POINTS LARGE! *****" << endl;
+            cout << endl;
         }
     }
 }
@@ -189,17 +201,28 @@ void Board::updateCells() {
         }
     }
 
+    int fightsOccured = 0; // Just for message purposes
+    cout << "\nFIGHT LOG" << endl;
+
+    // Adding crawler to a cell and fighting logic occurs in below for loop
     for(auto &crawler : crawlers){
         // Get the cell that is equal to the current crawler's i and j position
         Cell* cell = getCell(crawler->getPosition().x, crawler->getPosition().y);
 
-        // Then add that crawler to the cell object
+        // Then add that crawler to the cell object, only if it is alive
         if (crawler->isAlive()) {
             cell->addCrawler(crawler);
         }
 
+        // If statement to determine if there will be a fight in a given cell or not
         if (cell->getCrawlers().size() > 1) {
+            cout << "A FIGHT IS OCCURRING AT CELL (" << crawler->getPosition().x << ", " << crawler->getPosition().y << ")" << endl;
             cell->fightAndEat();
+            fightsOccured++;
         }
+    }
+
+    if (fightsOccured <= 0) {
+        cout << "No bugs have fought or eaten each other during this tap!" << endl;
     }
 }

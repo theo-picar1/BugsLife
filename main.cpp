@@ -9,7 +9,7 @@ using namespace std;
 
 // Basic methods
 void menu(Board *board = new Board());
-void load(vector<Crawler *> &crawlers, const string &file_name, Board *board);
+void load(vector<Crawler *> &crawlers, const string &file_name);
 void parseLine(const string &line, Crawler &crawler);
 void createFileHistory(Board *board);
 void displayMenu();
@@ -19,9 +19,8 @@ int main() {
     Board *board = new Board();
     string fname = "crawler-bugs.txt";
 
-    load(crawlers, fname, board); // Get all crawlers from the file first
+    load(crawlers, fname); // Get all crawlers from the file first
     board->initializeBoard(crawlers); // Then initialise the board with the crawlers
-    board->updateCells(); // Then add the crawlers to their corresponding cells
 
     cout << "***** BUGS LIFE SIMULATOR *****" << endl;
 
@@ -92,7 +91,7 @@ void createFileHistory(Board *board)
     MyFile.close();
 }
 
-void load(vector<Crawler *> &crawlers, const string &fname, Board *board)
+void load(vector<Crawler *> &crawlers, const string &fname)
 {
     ifstream fin(fname);
 

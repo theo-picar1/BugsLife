@@ -69,7 +69,7 @@ void Cell::fightAndEat() {
         }
     }
 
-    // Code to determine which bugs that are the same size will win
+    // Code to determine which bugs, that are the same size, will win
     Crawler* winner = nullptr;
     if (biggestCrawlers.size() == 1) {
         winner = biggestCrawlers.front();
@@ -94,7 +94,7 @@ void Cell::fightAndEat() {
         }
     }
 
-    cout << "Bug " << winner->getId() << " won and now has a size of " << winner->getSize();
+    cout << "Bug " << winner->getId() << " won and now has a size of " << winner->getSize() << endl;;
 }
 
 // To clear all crawlers in a cell. This prevents stacking when calling Board::updateCells()
