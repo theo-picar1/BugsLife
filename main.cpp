@@ -1,17 +1,18 @@
-#include "board.h"
+#include "Board.h"
+
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <fstream>
 using namespace std;
 
 // Basic methods
-void menu(vector<Crawler*> &crawlers, Board *board = new Board());
+void menu(Board *board = new Board());
 void load(vector<Crawler *> &crawlers, const string &file_name, Board *board);
 void parseLine(const string &line, Crawler &crawler);
 void createFileHistory(Board *board);
+void displayMenu();
 
 int main() {
     vector<Crawler*> crawlers;
@@ -24,18 +25,11 @@ int main() {
 
     cout << "***** BUGS LIFE SIMULATOR *****" << endl;
 
-    menu(crawlers, board);
+    menu(board);
 }
 
-void menu(vector<Crawler *> &crawlers, Board *board) {
-    cout << "Please choose one of the following options (1-8):" << endl
-         << "1. Display all bugs" << endl
-         << "2. Display bug by id" << endl
-         << "3. Tap/Shake bug board" << endl
-         << "4. Display bug life history" << endl
-         << "5. Display board (All cells)" << endl
-         << "6. Run simulation" << endl
-         << "7. Exit" << endl;
+void menu(Board *board) {
+    displayMenu();
 
     int choice;
     cin >> choice;
@@ -49,22 +43,11 @@ void menu(vector<Crawler *> &crawlers, Board *board) {
                 break;
 
             case 2: {
-                int id;
-                bool found = false;
-
                 cout << "Please enter the id of the bug you wish to find:" << endl;
+                int id;
                 cin >> id;
 
-                for (auto crawler : crawlers) {
-                    if (crawler->getId() == id) {
-                        crawler->display();
-                        found = true;
-                    }
-                }
-
-                if (!found) {
-                    cout << "No bug found with the id: " << id << endl;
-                }
+                board->findBugById(id);
                 
                 break;
             }
@@ -88,13 +71,7 @@ void menu(vector<Crawler *> &crawlers, Board *board) {
                 cout << "Invalid option. Please choose options 1-8!" << endl;
         }
 
-        cout << "\n1. Display all bugs" << endl
-             << "2. Display bug by id" << endl
-             << "3. Tap/Shake bug board" << endl
-             << "4. Display bug life history" << endl
-             << "5. Display board (All cells)" << endl
-             << "6. Run simulation" << endl
-             << "7. Exit" << endl;
+        displayMenu();
 
         cin >> choice;
     }
@@ -165,4 +142,17 @@ void parseLine(const string &line, Crawler &crawler)
 
     // make crawler
     crawler = Crawler(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
+}
+
+void displayMenu() {
+    cout << "*************************************************" << endl
+         << "Please choose one of the following options (1-8):" << endl
+         << "1. Display all bugs" << endl
+         << "2. Display bug by id" << endl
+         << "3. Tap/Shake bug board" << endl
+         << "4. Display bug life history" << endl
+         << "5. Display board (All cells)" << endl
+         << "6. Run simulation" << endl
+         << "7. Exit" << endl
+         << "*************************************************" << endl;
 }

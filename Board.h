@@ -19,12 +19,12 @@ public:
     Board();
     void initializeBoard(vector<Crawler*> &crawlers);
     void displayAllBugs();
-    Crawler* findBugById(int id);
+    void findBugById(int id);
     void tapBugBoard();
+    void displayBoard();
     void displayLifeHistory();
     string getLifeHistory();
     void runSimulation();
-    void displayBoard();
     Cell *getCell(int x, int y);
     void updateCells();
 };
