@@ -30,6 +30,12 @@ void Board::initializeBoard(vector<Crawler *> &crawlers)
             board[i][j] = new Cell(i, j);
         }
     }
+
+    for (auto &crawler : crawlers)
+    {
+        Cell *cell = this->getCell(crawler->getPosition().x, crawler->getPosition().y);
+        cell->addCrawler(crawler);
+    }
 }
 
 // Display property of every bug on the board: Their id, type, position, status, etc
