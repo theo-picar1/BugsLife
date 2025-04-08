@@ -68,6 +68,7 @@ void Board::tapBugBoard()
 
     for (auto &crawler : crawlers)
     {
+
         if (crawler->isAlive()) {
             crawler->move(); // Move functionality that is handled in the crawler class
         }
@@ -195,11 +196,14 @@ Cell* Board::getCell(int x, int y)
 // Code that, whenever called, will add crawlers to the cells in the board with the same depending on crawler positions
 void Board::updateCells() {
     // Clear crawler lists from each cell to prevent stacking
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
+    for(auto &crawler : crawlers)
+    {
+        int i = crawler->getPosition().getX();
+        int j = crawler->getPosition().getY();
+
             board[i][j]->clearCrawlers();
         }
-    }
+
 
     int fightsOccured = 0; // Just for message purposes
     cout << "\nFIGHT LOG" << endl;
