@@ -34,7 +34,7 @@ void menu(Board *board) {
     cin >> choice;
 
     // Repeat code inside until user chooses exit option
-    while (choice != 7) {
+    while (choice != 8) {
         switch (choice) {
             case 1:
                 cout << "Displaying all bugs..." << endl;
@@ -64,6 +64,9 @@ void menu(Board *board) {
                 board->runSimulation();
                 break;
             case 7:
+                cout << "Run SFML Application..." << endl;
+
+            case 8:
                 cout << "Ending simulation... Done! Goodbye." << endl;
                 break;
             default:

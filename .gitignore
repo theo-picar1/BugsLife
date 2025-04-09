@@ -1,5 +1,10 @@
+#C++ classes
 .idea/
 cmake-build-*/
+CMakeLists.txt
+
+#SFML
+SFML-2.6.2
 
 # vs code
 .vscode
@@ -7,4 +12,5 @@ main.exe
 build
 crawler-bugs.txt
 
+#txt files
 bugs_life_history_date_time.out.txt
