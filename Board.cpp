@@ -1,6 +1,7 @@
 #include "Board.h"
 #include <iostream>
 #include <list>
+#include <set>
 
 Board::Board() : crawlers() {
 }
@@ -13,7 +14,7 @@ Board::Board(const vector<Crawler *> &crawlers) {
 void Board::initializeBoard(vector<Crawler *> &crawlers) {
     this->crawlers = crawlers;
 
-    if (crawlers.empty()) {
+    if (this->crawlers.empty()) {
         cout << "There are no crawlers to initialise the board with. Please create some crawlers!" << endl;
     }
 
@@ -37,40 +38,37 @@ void Board::displayAllBugs() {
 
 // Method to find and display a with a given id
 void Board::findBugById(int id) {
-    bool found = false;
-
     for (auto &crawler: crawlers) {
         if (crawler->getId() == id) {
             cout << "Bug found!" << endl;
             crawler->display();
-            found = true;
+            return; // End the method since bug has already been found
         }
     }
 
-    if (!found) {
-        cout << "No bug found with an ID of " << id << ". Please try again!" << endl;
-    }
+    cout << "No bug found with an ID of " << id << ". Please try again!" << endl;
 }
 
 // Method that will cause all the bugs in the board to move by 1 cell
 void Board::tapBugBoard() {
-    cout << "\nTAPPING THE BOARD..." << endl;
+    vector<Crawler*> aliveCrawlers; // Keep track of all alive crawlers to avoid double isAlive check
 
-    for (auto &crawler: crawlers) {
+    cout << "\nTAPPING THE BOARD...\n";
+    for (auto &crawler : crawlers) {
         if (crawler->isAlive()) {
-            crawler->move(); // Move functionality that is handled in the crawler class
+            crawler->move();
+            aliveCrawlers.push_back(crawler);
         }
     }
 
-    cout << "NEW POSITIONS:" << endl;
-    for (auto &crawler: crawlers) {
-        if (crawler->isAlive()) {
-            crawler->display();
-        }
+    cout << "NEW POSITIONS:\n";
+    for (auto &crawler : aliveCrawlers) { // Only show the positions of all the alive crawlers
+        crawler->display();
     }
 
     updateCells();
 }
+
 
 // Method to display all the cells with any crawlers on the board
 void Board::displayBoard() {
@@ -89,14 +87,16 @@ void Board::displayBoard() {
 void Board::displayLifeHistory() {
     for (auto &crawler: crawlers) {
         crawler->display();
+
         cout << "Path: ";
         for (auto &position: crawler->getPath()) {
             cout << "(" << position.x << ", " << position.y << "), ";
         }
 
-        if (crawler->isAlive() == true) {
+        if (crawler->isAlive()) {
             cout << "Alive" << endl;
-        } else {
+        }
+        else {
             cout << "Eaten by " << crawler->getEatenBy() << endl;
         }
     }
@@ -184,13 +184,18 @@ void Board::updateCells() {
         if (crawler->isAlive()) {
             cell->addCrawler(crawler);
         }
+    }
 
-        // If statement to determine if there will be a fight in a given cell or not
-        if (cell->getCrawlers().size() > 1) {
-            cout << "A FIGHT IS OCCURRING AT CELL (" << crawler->getPosition().x << ", " << crawler->getPosition().y <<
-                    ")" << endl;
-            cell->fightAndEat();
-            fightsOccured++;
+    set<Cell*> processedCells;
+    for (int x = 0; x < 10; ++x) {
+        for (int y = 0; y < 10; ++y) {
+            Cell* cell = getCell(x, y);
+            if (cell->getCrawlers().size() > 1 && processedCells.find(cell) == processedCells.end()) { // Only proceed if the cell hasn't been processes yet
+                cout << "A FIGHT IS OCCURRING AT CELL (" << x << ", " << y << ")" << endl;
+                cell->fightAndEat();
+                processedCells.insert(cell);
+                fightsOccured++;
+            }
         }
     }
 
