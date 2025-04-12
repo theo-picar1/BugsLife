@@ -1,6 +1,7 @@
 #include "Board.h"
 #include <iostream>
 #include <list>
+#include <set>
 
 Board::Board() : crawlers() {
 }
@@ -184,13 +185,18 @@ void Board::updateCells() {
         if (crawler->isAlive()) {
             cell->addCrawler(crawler);
         }
+    }
 
-        // If statement to determine if there will be a fight in a given cell or not
-        if (cell->getCrawlers().size() > 1) {
-            cout << "A FIGHT IS OCCURRING AT CELL (" << crawler->getPosition().x << ", " << crawler->getPosition().y <<
-                    ")" << endl;
-            cell->fightAndEat();
-            fightsOccured++;
+    set<Cell*> processedCells;
+    for (int x = 0; x < 10; ++x) {
+        for (int y = 0; y < 10; ++y) {
+            Cell* cell = getCell(x, y);
+            if (cell->getCrawlers().size() > 1 && processedCells.find(cell) == processedCells.end()) { // Only proceed if the cell hasn't been processes yet
+                cout << "A FIGHT IS OCCURRING AT CELL (" << x << ", " << y << ")" << endl;
+                cell->fightAndEat();
+                processedCells.insert(cell);
+                fightsOccured++;
+            }
         }
     }
 
