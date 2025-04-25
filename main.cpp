@@ -1,6 +1,8 @@
 #include "Board.h"
 #include "Crawler.h"
 #include "SuperBug.h"
+#include "Hopper.h"
+
 #include <SFML/Graphics.hpp>
 
 #include <vector>
@@ -14,7 +16,7 @@ using namespace std;
 // Basic methods
 void menu(Board *board = new Board());
 void load(vector<Bug *> &bugs, const string &file_name);
-void parseLine(const string &line, Bug &bug);
+void parseLine(const string &line, Bug* &bug);
 void createFileHistory(Board *board);
 void displayMenu();
 int sfmlApplication();
@@ -176,7 +178,7 @@ void load(vector<Bug *> &bugs, const string &fname)
             bug = new Crawler();
         }
 
-        parseLine(line, *bug);
+        parseLine(line, bug);
 
         // push back the bug into the vector
         bugs.push_back(bug);
@@ -185,10 +187,10 @@ void load(vector<Bug *> &bugs, const string &fname)
     fin.close();
 }
 
-void parseLine(const string &line, Bug &bug)
+// CSV file is as follows: type, id, x pos, y pos, direction, and size
+void parseLine(const string &line, Bug* &bug)
 {
     string type, id, x, y, size, direction;
-    Position position;
     stringstream ss(line);
 
     // get type
@@ -211,10 +213,15 @@ void parseLine(const string &line, Bug &bug)
     if (type == "C")
     {
         // make Crawler
-        bug = Crawler(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
+        bug = new Crawler(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
     } else if (type == "S"){
         // make SuperBug
-        bug = SuperBug(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
+        bug = new SuperBug(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
+    } else if (type == "H") { // make Hopper
+        string hopLength;
+        // get hopLength
+        getline(ss,hopLength,',');
+        bug = new Hopper(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1, stoi(hopLength));
     }
 }
 

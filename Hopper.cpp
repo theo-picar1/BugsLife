@@ -1,36 +1,36 @@
-#include "Crawler.h"
+#include "Hopper.h"
 #include "Board.h"
 
 #include <random>
 #include <iostream>
 
-Crawler::Crawler()
+Hopper::Hopper()
 {
-    this->type = "Crawler";
+    this->type = "Hopper";
     this->id = 0;
     this->position = {0, 0};
     this->direction = Direction::NORTH;
     this->size = 0;
     this->alive = true;
     this->eatenBy = -1;
-
     this->path = {};
+    this->hopLength = 2;
 }
 
-Crawler::Crawler(int id, Position position, Direction direction, int size, bool alive, int eatenBy)
+Hopper::Hopper(int id, Position position, Direction direction, int size, bool alive, int eatenBy, int hopLength)
 {
-    this->type = "Crawler";
+    this->type = "Hopper";
     this->id = id;
     this->position = position;
     this->direction = direction;
     this->size = size;
     this->alive = alive;
     this->eatenBy = eatenBy;
-
     this->path = list<Position>{this->position};
+    this->hopLength = hopLength;
 };
 
-void Crawler::move()
+void Hopper::move()
 {
     if (this->wayIsBlocked())
     {
@@ -58,7 +58,7 @@ void Crawler::move()
 
         this->move();
     }
-    else
+    else // If the way is blocked, proceed to move normally
     {
         // Once done checking the unblocked paths, we initialise the new position with the current position
         Position nextPosition = this->position;
@@ -67,19 +67,24 @@ void Crawler::move()
         switch (this->direction)
         {
         case Direction::NORTH:
-            nextPosition.y++;
+            // Ternary operator that will check for the following:
+            // 1. If the current position on the y position is within less than hopLength distance from the wall, just set it just by the wall
+            // 2. Otherwise, just move hopLength distance normally
+            // 3. Logic applies to the other directions too
+            nextPosition.y = (this->position.y > (9 - this->hopLength)) ? 9 : this->position.y + this-> hopLength;
             break;
 
         case Direction::EAST:
-            nextPosition.x++;
+            nextPosition.x = (this->position.x > (9 - this->hopLength)) ? 9 : this->position.x + this-> hopLength;
             break;
 
         case Direction::SOUTH:
-            nextPosition.y--;
+            // Same logic but in opposite direction
+            nextPosition.y = (this->position.y < (0 + this->hopLength)) ? 0 : this->position.y - this-> hopLength;
             break;
 
         case Direction::WEST:
-            nextPosition.x--;
+            nextPosition.x = (this->position.x < (0 + this->hopLength)) ? 0 : this->position.x - this-> hopLength;
             break;
         }
 
