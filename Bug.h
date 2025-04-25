@@ -31,6 +31,7 @@ public:
 
 class Bug {
 protected:
+    string type;
     int id;
     Position position;
     Direction direction;

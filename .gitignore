@@ -10,7 +10,7 @@ SFML-2.6.2
 .vscode
 main.exe
 build
-crawler-bugs.txt
+bugs.txt
 
 #txt files
 bugs_life_history_date_time.out.txt

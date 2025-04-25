@@ -2,14 +2,14 @@
 #define CELL_H
 
 #include <list>
-#include "Crawler.h"
+#include "Bug.h"
 
 using namespace std;
 
 class Cell {
 private:
     int x, y;
-    list<Crawler*> crawlers;
+    list<Bug*> bugs;
 
 public:
     Cell();
@@ -18,17 +18,17 @@ public:
     // Getters
     int getX() const;
     int getY() const;
-    list<Crawler*> getCrawlers() const;
+    list<Bug*> getBugs() const;
 
     // Setters
     void setX(int id);
     void setY(int y);
-    void setCrawlers(list<Crawler*> crawlers);
+    void setBugs(list<Bug*> bugs);
 
     // Methods
-    void addCrawler(Crawler* crawler);
-    void displayCrawlers();
-    void clearCrawlers();
+    void addBug(Bug* bug);
+    void displayBugs();
+    void clearBugs();
     void fightAndEat();
 };
 

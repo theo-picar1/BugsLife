@@ -58,7 +58,7 @@ int Bug::getEatenBy() const { return eatenBy; }
 void Bug::setEatenBy(int eatenBy) { this->eatenBy = eatenBy; }
 
 void Bug::display(){
-    cout << "ID: " << id << ", Position: (" << position.x << ", " << position.y
+    cout << "Type: " << type << ", ID: " << id << ", Position: (" << position.x << ", " << position.y
              << "), Direction: " << this->getDirection() << ", Size: " << size << endl;
 }
 
@@ -68,7 +68,7 @@ string Bug::getDisplay(){
 
 // This method will be overrided by the other classes
 void Bug::move() {
-
+    cout << "Moving..." << endl;
 }
 
 // Anything below 0 or over 9 is considered out of bounds
