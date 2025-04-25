@@ -1,4 +1,6 @@
 #include "Board.h"
+#include "Crawler.h"
+#include "SuperBug.h"
 #include <SFML/Graphics.hpp>
 
 #include <vector>
@@ -11,8 +13,8 @@ using namespace std;
 
 // Basic methods
 void menu(Board *board = new Board());
-void load(vector<Crawler *> &crawlers, const string &file_name);
-void parseLine(const string &line, Crawler &crawler);
+void load(vector<Bug *> &bugs, const string &file_name);
+void parseLine(const string &line, Bug &bug);
 void createFileHistory(Board *board);
 void displayMenu();
 int sfmlApplication();
@@ -58,63 +60,68 @@ struct ball
     }
 };
 
-int main() {
-    vector<Crawler*> crawlers;
+int main()
+{
+    vector<Bug *> bugs;
     Board *board = new Board();
-    string fname = "crawler-bugs.txt";
+    string fname = "bugs.txt";
 
-    load(crawlers, fname); // Get all crawlers from the file first
-    board->initializeBoard(crawlers); // Then initialise the board with the crawlers
+    load(bugs, fname);            // Get all bugs from the file first
+    board->initializeBoard(bugs); // Then initialise the board with the bugs
 
     cout << "***** BUGS LIFE SIMULATOR *****" << endl;
 
     menu(board);
 }
 
-void menu(Board *board) {
+void menu(Board *board)
+{
     displayMenu();
 
     int choice;
     cin >> choice;
 
     // Repeat code inside until user chooses exit option
-    while (choice != 8) {
-        switch (choice) {
-            case 1:
-                cout << "Displaying all bugs..." << endl;
-                board->displayAllBugs();
-                break;
+    while (choice != 8)
+    {
+        switch (choice)
+        {
+        case 1:
+            cout << "Displaying all bugs..." << endl;
+            board->displayAllBugs();
+            break;
 
-            case 2: {
-                cout << "Please enter the id of the bug you wish to find:" << endl;
-                int id;
-                cin >> id;
+        case 2:
+        {
+            cout << "Please enter the id of the bug you wish to find:" << endl;
+            int id;
+            cin >> id;
 
-                board->findBugById(id);
-                
-                break;
-            }
-            case 3:
-                board->tapBugBoard();
-                break;
-            case 4:
-                board->displayLifeHistory();
-                break;
-            case 5:
-                board->displayBoard();
-                break;
-            case 6:
-                cout << "Running simulation..." << endl;
-                board->runSimulation();
-                break;
-            case 7:
-                cout << "Runing SFML Application..." << endl;
-                sfmlApplication();
-            case 8:
-                cout << "Ending simulation... Done! Goodbye." << endl;
-                break;
-            default:
-                cout << "Invalid option. Please choose options 1-8!" << endl;
+            board->findBugById(id);
+
+            break;
+        }
+        case 3:
+            board->tapBugBoard();
+            break;
+        case 4:
+            board->displayLifeHistory();
+            break;
+        case 5:
+            board->displayBoard();
+            break;
+        case 6:
+            cout << "Running simulation..." << endl;
+            board->runSimulation();
+            break;
+        case 7:
+            cout << "Runing SFML Application..." << endl;
+            sfmlApplication();
+        case 8:
+            cout << "Ending simulation... Done! Goodbye." << endl;
+            break;
+        default:
+            cout << "Invalid option. Please choose options 1-8!" << endl;
         }
 
         displayMenu();
@@ -138,7 +145,7 @@ void createFileHistory(Board *board)
     MyFile.close();
 }
 
-void load(vector<Crawler *> &crawlers, const string &fname)
+void load(vector<Bug *> &bugs, const string &fname)
 {
     ifstream fin(fname);
 
@@ -154,23 +161,38 @@ void load(vector<Crawler *> &crawlers, const string &fname)
     // keep going while there is still content in the file
     while (getline(fin, line))
     {
-        Crawler *crawler = new Crawler();
-        parseLine(line, *crawler);
-        // push back the crawler into the vector
-        crawlers.push_back(crawler);
+        string type;
+
+        stringstream ss(line);
+
+        // get type
+        getline(ss, type, ',');
+
+        Bug *bug = nullptr;
+
+        if(type == "S"){
+            bug = new SuperBug();
+        }else if(type == "C"){
+            bug = new Crawler();
+        }
+
+        parseLine(line, *bug);
+
+        // push back the bug into the vector
+        bugs.push_back(bug);
     }
 
     fin.close();
 }
 
-void parseLine(const string &line, Crawler &crawler)
+void parseLine(const string &line, Bug &bug)
 {
-    string id, x, y, size, direction, temp;
+    string type, id, x, y, size, direction;
     Position position;
     stringstream ss(line);
 
-    // skip over type of crawler for now
-    getline(ss, temp, ',');
+    // get type
+    getline(ss, type, ',');
 
     // get id
     getline(ss, id, ',');
@@ -186,8 +208,14 @@ void parseLine(const string &line, Crawler &crawler)
     // get size
     getline(ss, size, ',');
 
-    // make crawler
-    crawler = Crawler(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
+    if (type == "C")
+    {
+        // make Crawler
+        bug = Crawler(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
+    } else if (type == "S"){
+        // make SuperBug
+        bug = SuperBug(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1);
+    }
 }
 
 int sfmlApplication() {
@@ -298,7 +326,8 @@ int sfmlApplication() {
     return 0;
 }
 
-void displayMenu() {
+void displayMenu()
+{
     cout << "*************************************************" << endl
          << "Please choose one of the following options (1-8):" << endl
          << "1. Display all bugs" << endl

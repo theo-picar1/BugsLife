@@ -7,7 +7,7 @@ Cell::Cell()
     this->x = 0;
     this->y = 0;
 
-    this->crawlers = {};
+    this->bugs = {};
 }
 
 Cell::Cell(int x, int y)
@@ -15,7 +15,7 @@ Cell::Cell(int x, int y)
     this->x = x;
     this->y = y;
 
-    this->crawlers = {};
+    this->bugs = {};
 };
 
 int Cell::getX() const { return x; }
@@ -26,22 +26,22 @@ int Cell::getY() const { return y; }
 
 void Cell::setY(int y) { this->y = y; }
 
-list<Crawler *> Cell::getCrawlers() const { return crawlers; }
+list<Bug *> Cell::getBugs() const { return bugs; }
 
-void Cell::setCrawlers(list<Crawler *> crawlers) { this->crawlers = crawlers; };
+void Cell::setBugs(list<Bug *> bugs) { this->bugs = bugs; };
 
-void Cell::addCrawler(Crawler *crawler)
+void Cell::addBug(Bug *bug)
 {
-    crawlers.push_back(crawler);
+    bugs.push_back(bug);
 }
 
-void Cell::displayCrawlers()
+void Cell::displayBugs()
 {
-    if (this->crawlers.size() > 0)
+    if (this->bugs.size() > 0)
     {
-        for (auto &crawler : crawlers)
+        for (auto &bug : bugs)
         {
-            crawler->display();
+            bug->display();
         }
     }
     else
@@ -54,50 +54,50 @@ void Cell::displayCrawlers()
 void Cell::fightAndEat() {
 
     // First find the biggest bug in the cell
-    int maxSize = this->crawlers.front()->getSize();
-    for (auto crawler : crawlers) {
-        if (crawler->getSize() > maxSize) {
-            maxSize = crawler->getSize();
+    int maxSize = this->bugs.front()->getSize();
+    for (auto bug : bugs) {
+        if (bug->getSize() > maxSize) {
+            maxSize = bug->getSize();
         }
     }
 
     // This is to check if there are any bugs that are the same size as each other.
-    list<Crawler*> biggestCrawlers;
-    for (auto crawler : crawlers) {
-        if (crawler->getSize() == maxSize) {
-            biggestCrawlers.push_back(crawler);
+    list<Bug*> biggestBugs;
+    for (auto bug : bugs) {
+        if (bug->getSize() == maxSize) {
+            biggestBugs.push_back(bug);
         }
     }
 
     // Code to determine which bugs, that are the same size, will win
-    Crawler* winner = nullptr;
-    if (biggestCrawlers.size() == 1) {
-        winner = biggestCrawlers.front();
+    Bug* winner = nullptr;
+    if (biggestBugs.size() == 1) {
+        winner = biggestBugs.front();
     }
     else {
         std::random_device rd;
         std::mt19937 gen(rd());
-        // A random number will be generated between the ranges 0 and the number of bugs in the biggestCrawlers list
-        std::uniform_int_distribution<> distr(0, biggestCrawlers.size() - 1);
+        // A random number will be generated between the ranges 0 and the number of bugs in the biggestBugs list
+        std::uniform_int_distribution<> distr(0, biggestBugs.size() - 1);
 
         int index = distr(gen);
-        auto it = biggestCrawlers.begin();
+        auto it = biggestBugs.begin();
         std::advance(it, index);
         winner = *it;
     }
 
-    // Set every other crawler that isn't the winner to be dead and add their sizes to the winning bug
-    for (auto crawler : crawlers) {
-        if (crawler != winner) {
-            crawler->setAlive(false);
-            winner->grow(crawler->getSize());
+    // Set every other bug that isn't the winner to be dead and add their sizes to the winning bug
+    for (auto bug : bugs) {
+        if (bug != winner) {
+            bug->setAlive(false);
+            winner->grow(bug->getSize());
         }
     }
 
     cout << "Bug " << winner->getId() << " won and now has a size of " << winner->getSize() << endl;;
 }
 
-// To clear all crawlers in a cell. This prevents stacking when calling Board::updateCells()
-void Cell::clearCrawlers() {
-    this->crawlers.clear();
+// To clear all bugs in a cell. This prevents stacking when calling Board::updateCells()
+void Cell::clearBugs() {
+    this->bugs.clear();
 }

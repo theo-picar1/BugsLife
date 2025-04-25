@@ -5,19 +5,19 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "Crawler.h"
+#include "Bug.h"
 #include "Cell.h"
 #include <vector>
 
 class Board {
     vector<vector<Cell*>> board;
 
-    vector<Crawler*> crawlers;
+    vector<Bug*> bugs;
 
-    Board(const vector<Crawler *> &crawlers);
+    Board(const vector<Bug *> &bugs);
 public:
     Board();
-    void initializeBoard(vector<Crawler*> &crawlers);
+    void initializeBoard(vector<Bug*> &bugs);
     void displayAllBugs();
     void findBugById(int id);
     void tapBugBoard();
