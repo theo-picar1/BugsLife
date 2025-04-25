@@ -2,7 +2,6 @@
 #include "Board.h"
 
 #include <random>
-#include <print>
 
 SuperBug::SuperBug() : Bug()
 {
