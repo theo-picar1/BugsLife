@@ -91,6 +91,7 @@ void Cell::fightAndEat() {
         if (bug != winner) {
             bug->setAlive(false);
             winner->grow(bug->getSize());
+            bug->setEatenBy(winner->getId());
         }
     }
 
