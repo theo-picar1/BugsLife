@@ -208,14 +208,14 @@ void Board::updateCells() {
 
 int Board::runMoveableSFMLApplication()
 {
-    RenderWindow window(VideoMode(600, 600), "BugsLife SFML Simulator"); // Creates size of window
+    RenderWindow window(VideoMode(600, 600), "BugsLife SFML Simulator");
     vector<RectangleShape> tiles;
-    vector<Sprite> sfmlBugs; // Vector to store the sprites for the bugs
+    vector<Sprite> sfmlBugs; // Vector to keep track of every single bug that appears on the board. This is mainly for clearing the old positions
 
     Texture superbugTexture;
-    superbugTexture.loadFromFile("super-bug.jpg"); // Sets image of superbug
-    Sprite superbug; // Create a sprite for the bug
-    superbug.setTexture(superbugTexture); // Sets the bug's texture to the loaded image
+    superbugTexture.loadFromFile("super-bug.jpg");
+    Sprite superbug;
+    superbug.setTexture(superbugTexture);
 
     float cellSize = 60;
     Vector2u textureSize = superbugTexture.getSize(); // To get the dimensions of the image being used so that we can scale it down to be 1 cell big
@@ -227,6 +227,7 @@ int Board::runMoveableSFMLApplication()
     crawlerTexture.loadFromFile("crawler.png");
     hopperTexture.loadFromFile("hopper.jpeg");
 
+    // Just some error checking
     if (!crawlerTexture.loadFromFile("crawler.png")) {
         std::cerr << "Failed to load crawler texture!" << std::endl;
     }
@@ -234,7 +235,7 @@ int Board::runMoveableSFMLApplication()
         std::cerr << "Failed to load hopper texture!" << std::endl;
     }
 
-    // Loop through the bugs and create sprites for each one
+    // Loop through the bugs and create new sprites for each one to push into the sfmlSprites vector
     for (auto &bug : bugs) {
         Sprite sfmlBug; // sprite for the other bug types
         std::cout << "Bug type: " << bug->getType() << std::endl;
@@ -248,15 +249,12 @@ int Board::runMoveableSFMLApplication()
             textureSize = hopperTexture.getSize();
         }
 
-        // THIS IS FINE
         if (bug->isAlive()) {
-            sfmlBug.setScale(cellSize / textureSize.x, cellSize / textureSize.y); // Scale bug to fit grid cell
-            sfmlBug.setPosition(bug->getPosition().x * cellSize, bug->getPosition().y * cellSize); // Set position based on the bug's position
-            sfmlBugs.push_back(sfmlBug); // Store the sprite in the vector
+            sfmlBug.setScale(cellSize / textureSize.x, cellSize / textureSize.y); // set sze for this particular bug
+            sfmlBug.setPosition(bug->getPosition().x * cellSize, bug->getPosition().y * cellSize); // Set position based on the bug's defined  position from the text file
+            sfmlBugs.push_back(sfmlBug); //push to the vector
         }
     }
-
-    window.setFramerateLimit(60); // Limit frame rate to 60 frames per second
 
     bool isSelected = false; // Flag to track if the bug is selected
     int bug_x, bug_y; // Variables to store the bug's position offsets when being dragged
@@ -299,43 +297,38 @@ int Board::runMoveableSFMLApplication()
                     bug_y = event.mouseButton.y - superbug.getPosition().y;
                 }
 
-                tapBugBoard();
+                tapBugBoard(); // Simulate tapping the board when the user clicks the left click mouse click thing
 
-                // SHOULD BE FINE. ALL IT IS, IS JUST RESETTING THE BOARD TO ADD THE NEW POSITIONS
-                // Also reload the bugs and only add the alive ones
+                // Also relod the board to get rid of the old positions
                 sfmlBugs.clear();
 
                 for (auto &bug : bugs) {
                     Sprite sfmlBug;
 
-                    if (bug->isAlive()) {
-                        if (bug->getType() == "Crawler") {
-                            sfmlBug.setTexture(crawlerTexture);
-                            textureSize = crawlerTexture.getSize();
-                        }
-                        else if (bug->getType() == "Hopper") {
-                            sfmlBug.setTexture(hopperTexture);
-                            textureSize = hopperTexture.getSize();
-                        }
+                    // If-else statement for checking the type of the bug to match it with its corresponding image from the orange debug file
+                    if (bug->getType() == "Crawler") {
+                        sfmlBug.setTexture(crawlerTexture);
+                        textureSize = crawlerTexture.getSize();
                     }
-                    else {
-                        // Red hue for the dead bug instead of removing it from the sfml app
-                        if (bug->getType() == "Crawler") {
-                            sfmlBug.setTexture(crawlerTexture);
-                        }
-                        else if (bug->getType() == "Hopper") {
-                            sfmlBug.setTexture(hopperTexture);
-                        }
+                    else if (bug->getType() == "Hopper") {
+                        sfmlBug.setTexture(hopperTexture);
+                        textureSize = hopperTexture.getSize();
+                    }
+
+                    if (!bug->isAlive()) {
+                        // Red hue for the dead bug instead of removing it from the SFML app
                         sfmlBug.setColor(Color(255, 0, 0, 255));
                     }
 
+                    // Then for each bug, set its scale, position
                     sfmlBug.setScale(cellSize / textureSize.x, cellSize / textureSize.y);
                     sfmlBug.setPosition(bug->getPosition().x * cellSize, bug->getPosition().y * cellSize);
                     sfmlBugs.push_back(sfmlBug);
+
                 }
 
                 // And let sfml know the new positions of the bugs
-                for (size_t i = 0; i < bugs.size(); ++i) {
+                for (int i = 0; i < bugs.size(); ++i) {
                     sfmlBugs[i].setPosition(bugs[i]->getPosition().x * 60, bugs[i]->getPosition().y * 60);
                 }
             }
