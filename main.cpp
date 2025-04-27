@@ -12,6 +12,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace sf;
 
 // Basic methods
 void menu(Board *board = new Board());
@@ -20,8 +21,8 @@ void parseLine(const string &line, Bug* &bug);
 void createFileHistory(Board *board);
 void displayMenu();
 int sfmlApplication();
+int runMoveableSFMLApplication();
 
-using namespace std;
 struct ball
 {
     int x, y;
@@ -119,6 +120,9 @@ void menu(Board *board)
         case 7:
             cout << "Runing SFML Application..." << endl;
             sfmlApplication();
+        case 9: // This is temporary just didn't want to touch your code
+            cout << "Runing SFML Application..." << endl;
+            runMoveableSFMLApplication();
         case 8:
             cout << "Ending simulation... Done! Goodbye." << endl;
             break;
@@ -223,6 +227,110 @@ void parseLine(const string &line, Bug* &bug)
         getline(ss,hopLength,',');
         bug = new Hopper(stoi(id), Position(stoi(x), stoi(y)), static_cast<Direction>(stoi(direction)), stoi(size), true, -1, stoi(hopLength));
     }
+}
+
+int runMoveableSFMLApplication()
+{
+    RenderWindow window(VideoMode(600, 600), "A Bugs Life"); // Creates size of window
+    vector<RectangleShape> tiles;
+
+    Sprite bug; // Create a sprite for the bug
+    bug.setScale(0.2, 0.25); // sets size of bug
+
+    Texture texture;
+    texture.loadFromFile("download.jpg"); // Sets image of bug
+    bug.setTexture(texture); // Sets the bug's texture to the loaded image
+
+    window.setFramerateLimit(60); // Limit frame rate to 60 frames per second
+
+    bool isSelected=false; // Flag to track if the bug is selected
+    int bug_x, bug_y; // Variables to store the bug's position offsets when being dragged
+
+    // Set up a field (all green tiles with light borders)
+    for (int x = 0; x < 10; x++) {
+        for (int y = 0; y < 10; y++) {
+            RectangleShape tile(Vector2f(58, 58)); // Slightly smaller to create border space
+            tile.setFillColor(Color(144, 238, 144)); // Light green (like grass)
+            tile.setPosition(x * 60 + 1, y * 60 + 1); // Position with 1px 'border' feel
+            tiles.push_back(tile);
+        }
+    }
+
+    while (window.isOpen())
+    {
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed) // if close button pressed -> close
+                window.close();
+            if (event.type == Event::MouseButtonPressed)
+            {
+                // Check if the mouse click is on the bug
+                  if (event.mouseButton.x > bug.getPosition().x &&
+                      event.mouseButton.x < bug.getPosition().x+60
+                      && event.mouseButton.y > bug.getPosition().y &&
+                      event.mouseButton.y < bug.getPosition().y+60 ) {
+                      isSelected=true; // Mark the bug as selected
+                      bug_x = event.mouseButton.x - bug.getPosition().x;
+                      bug_y = event.mouseButton.y - bug.getPosition().y;
+                  }
+            }
+            if (event.type == Event::MouseMoved) {
+                // Checks if mouse is down when it's moving to allow dragging the bug
+                if (isSelected) {
+                    bug.setPosition(Vector2f(event.mouseMove.x-bug_x, event.mouseMove.y-bug_y));
+                }
+            }
+            if (event.type == Event::MouseButtonReleased) {
+                // sets is selected to false when mouse is released
+                if (isSelected) {
+                    // snap bug to grid
+                    int mx = (event.mouseButton.x/60)*60;
+                    int my = (event.mouseButton.y/60)*60;
+                    bug.setPosition(Vector2f(mx, my)); // Set the bug's new position
+                    isSelected=false; // Unselect the bug
+                }
+            }
+            // checks if any key is pressed
+            if (event.type == Event::KeyPressed) {
+                // checks if up key is pressed
+                if (event.key.code == Keyboard::Key::Up) {
+                    if (bug.getPosition().y >=60) {
+                        bug.setPosition(bug.getPosition().x,bug.getPosition().y-60); // moves bug up
+                    }
+                }
+                // checks if up key is pressed
+                if (event.key.code == Keyboard::Key::Down) {
+                    if (bug.getPosition().y <=535) {
+                        bug.setPosition(bug.getPosition().x,bug.getPosition().y+60); // moves bug down
+                    }
+                }
+                // checks if up key is pressed
+                if (event.key.code == Keyboard::Key::Left) {
+                    if (bug.getPosition().x >=60 ) {
+                        bug.setPosition(bug.getPosition().x-60,bug.getPosition().y); // moves bug left
+                    }
+                }
+                // checks if up key is pressed
+                if (event.key.code == Keyboard::Key::Right) {
+                    if (bug.getPosition().x <=535) {
+                        bug.setPosition(bug.getPosition().x+60,bug.getPosition().y); // moves bug right
+                    }
+                }
+            }
+        }
+
+        window.clear(Color(34, 139, 34)); // sets window with darker grass green background
+
+        // draw all tiles
+        for (RectangleShape &rect: tiles) {
+            window.draw(rect);
+        }
+        window.draw(bug); // draw bug
+        window.display(); // display all that's been drawn
+    }
+
+    return 0;
 }
 
 int sfmlApplication() {
@@ -344,6 +452,7 @@ void displayMenu()
          << "5. Display board (All cells)" << endl
          << "6. Run simulation" << endl
          << "7. Run SFML Application" << endl
+         << "9. Run moveable bug SFML Application" << endl
          << "8. Exit" << endl
          << "*************************************************" << endl;
 }
