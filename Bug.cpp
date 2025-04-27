@@ -64,7 +64,7 @@ void Bug::setEatenBy(int eatenBy) { this->eatenBy = eatenBy; }
 
 void Bug::display(){
     cout << "Type: " << type << ", ID: " << id << ", Position: (" << position.x << ", " << position.y
-             << "), Direction: " << this->getDirection() << ", Size: " << size << endl;
+             << "), Direction: " << this->getDirection() << ", Size: " << size << boolalpha << ", Alive?: " << alive << endl;
 }
 
 string Bug::getDisplay(){

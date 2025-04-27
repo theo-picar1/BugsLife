@@ -164,7 +164,6 @@ Cell *Board::getCell(int x, int y) {
     return board[x][y];
 }
 
-// Code that, whenever called, will add bugs to the cells in the board with the same depending on bug positions
 void Board::updateCells() {
     // Clear bug lists from each cell to prevent stacking
     for (auto &bug: bugs) {
@@ -249,9 +248,12 @@ int Board::runMoveableSFMLApplication()
             textureSize = hopperTexture.getSize();
         }
 
-        sfmlBug.setScale(cellSize / textureSize.x, cellSize / textureSize.y); // Scale bug to fit grid cell
-        sfmlBug.setPosition(bug->getPosition().x * cellSize, bug->getPosition().y * cellSize); // Set position based on the bug's position
-        sfmlBugs.push_back(sfmlBug); // Store the sprite in the vector
+        // THIS IS FINE
+        if (bug->isAlive()) {
+            sfmlBug.setScale(cellSize / textureSize.x, cellSize / textureSize.y); // Scale bug to fit grid cell
+            sfmlBug.setPosition(bug->getPosition().x * cellSize, bug->getPosition().y * cellSize); // Set position based on the bug's position
+            sfmlBugs.push_back(sfmlBug); // Store the sprite in the vector
+        }
     }
 
     window.setFramerateLimit(60); // Limit frame rate to 60 frames per second
@@ -284,8 +286,8 @@ int Board::runMoveableSFMLApplication()
     while (window.isOpen()) {
         Event event;
         while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) // if close button pressed -> close
-                window.close();
+            if (event.type == Event::Closed) { window.close(); }
+
             if (event.type == Event::MouseButtonPressed) {
                 // Check if the mouse click is on the bug
                 if (event.mouseButton.x > superbug.getPosition().x &&
@@ -296,13 +298,55 @@ int Board::runMoveableSFMLApplication()
                     bug_x = event.mouseButton.x - superbug.getPosition().x;
                     bug_y = event.mouseButton.y - superbug.getPosition().y;
                 }
+
+                tapBugBoard();
+
+                // SHOULD BE FINE. ALL IT IS, IS JUST RESETTING THE BOARD TO ADD THE NEW POSITIONS
+                // Also reload the bugs and only add the alive ones
+                sfmlBugs.clear();
+
+                for (auto &bug : bugs) {
+                    Sprite sfmlBug;
+
+                    if (bug->isAlive()) {
+                        if (bug->getType() == "Crawler") {
+                            sfmlBug.setTexture(crawlerTexture);
+                            textureSize = crawlerTexture.getSize();
+                        }
+                        else if (bug->getType() == "Hopper") {
+                            sfmlBug.setTexture(hopperTexture);
+                            textureSize = hopperTexture.getSize();
+                        }
+                    }
+                    else {
+                        // Red hue for the dead bug instead of removing it from the sfml app
+                        if (bug->getType() == "Crawler") {
+                            sfmlBug.setTexture(crawlerTexture);
+                        }
+                        else if (bug->getType() == "Hopper") {
+                            sfmlBug.setTexture(hopperTexture);
+                        }
+                        sfmlBug.setColor(Color(255, 0, 0, 255));
+                    }
+
+                    sfmlBug.setScale(cellSize / textureSize.x, cellSize / textureSize.y);
+                    sfmlBug.setPosition(bug->getPosition().x * cellSize, bug->getPosition().y * cellSize);
+                    sfmlBugs.push_back(sfmlBug);
+                }
+
+                // And let sfml know the new positions of the bugs
+                for (size_t i = 0; i < bugs.size(); ++i) {
+                    sfmlBugs[i].setPosition(bugs[i]->getPosition().x * 60, bugs[i]->getPosition().y * 60);
+                }
             }
+
             if (event.type == Event::MouseMoved) {
                 // Checks if mouse is down when it's moving to allow dragging the bug
                 if (isSelected) {
                     superbug.setPosition(Vector2f(event.mouseMove.x - bug_x, event.mouseMove.y - bug_y));
                 }
             }
+
             if (event.type == Event::MouseButtonReleased) {
                 // sets is selected to false when mouse is released
                 if (isSelected) {
