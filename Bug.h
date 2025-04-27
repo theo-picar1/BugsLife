@@ -42,9 +42,10 @@ protected:
 
 public:
     Bug();
-    Bug(int id, Position position, Direction direction, int size, bool alive, int eatenBy);
+    Bug(string type, int id, Position position, Direction direction, int size, bool alive, int eatenBy);
 
     // Getters
+    string getType() const;
     int getId() const;
     Position getPosition() const;
     string getDirection() const;
@@ -54,6 +55,7 @@ public:
     int getEatenBy() const;
 
     // Setters
+    void setType(string type);
     void setId(int id);
     void setPosition(Position position);
     void setDirection(Direction direction);
