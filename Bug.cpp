@@ -8,6 +8,7 @@
 using namespace std;
 
 Bug::Bug() {
+    type="C",
     id = 0;
     position = Position(0, 0);
     direction = Direction::NORTH;
@@ -15,6 +16,10 @@ Bug::Bug() {
     alive = true;
     eatenBy = -1;
 }
+
+string Bug::getType() const { return type; }
+
+void Bug::setType(string type) { this->type = type; }
 
 int Bug::getId() const { return id; }
 

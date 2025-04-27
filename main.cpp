@@ -20,7 +20,7 @@ void load(vector<Bug *> &bugs, const string &file_name);
 void parseLine(const string &line, Bug* &bug);
 void createFileHistory(Board *board);
 void displayMenu();
-int sfmlApplication();
+// int sfmlApplication();
 int runMoveableSFMLApplication();
 
 struct ball
@@ -119,10 +119,10 @@ void menu(Board *board)
             break;
         case 7:
             cout << "Runing SFML Application..." << endl;
-            sfmlApplication();
+            // sfmlApplication();
         case 9: // This is temporary just didn't want to touch your code
             cout << "Runing SFML Application..." << endl;
-            runMoveableSFMLApplication();
+            board->runMoveableSFMLApplication();
         case 8:
             cout << "Ending simulation... Done! Goodbye." << endl;
             break;
@@ -178,8 +178,12 @@ void load(vector<Bug *> &bugs, const string &fname)
 
         if(type == "S"){
             bug = new SuperBug();
-        }else if(type == "C"){
+        }
+        else if(type == "C"){
             bug = new Crawler();
+        }
+        else if (type == "H") {
+            bug = new Hopper();
         }
 
         parseLine(line, bug);
@@ -229,217 +233,113 @@ void parseLine(const string &line, Bug* &bug)
     }
 }
 
-int runMoveableSFMLApplication()
-{
-    RenderWindow window(VideoMode(600, 600), "A Bugs Life"); // Creates size of window
-    vector<RectangleShape> tiles;
-
-    Sprite bug; // Create a sprite for the bug
-    bug.setScale(0.2, 0.25); // sets size of bug
-
-    Texture texture;
-    texture.loadFromFile("download.jpg"); // Sets image of bug
-    bug.setTexture(texture); // Sets the bug's texture to the loaded image
-
-    window.setFramerateLimit(60); // Limit frame rate to 60 frames per second
-
-    bool isSelected=false; // Flag to track if the bug is selected
-    int bug_x, bug_y; // Variables to store the bug's position offsets when being dragged
-
-    // Set up a field (all green tiles with light borders)
-    for (int x = 0; x < 10; x++) {
-        for (int y = 0; y < 10; y++) {
-            RectangleShape tile(Vector2f(58, 58)); // Slightly smaller to create border space
-            tile.setFillColor(Color(144, 238, 144)); // Light green (like grass)
-            tile.setPosition(x * 60 + 1, y * 60 + 1); // Position with 1px 'border' feel
-            tiles.push_back(tile);
-        }
-    }
-
-    while (window.isOpen())
-    {
-        Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed) // if close button pressed -> close
-                window.close();
-            if (event.type == Event::MouseButtonPressed)
-            {
-                // Check if the mouse click is on the bug
-                  if (event.mouseButton.x > bug.getPosition().x &&
-                      event.mouseButton.x < bug.getPosition().x+60
-                      && event.mouseButton.y > bug.getPosition().y &&
-                      event.mouseButton.y < bug.getPosition().y+60 ) {
-                      isSelected=true; // Mark the bug as selected
-                      bug_x = event.mouseButton.x - bug.getPosition().x;
-                      bug_y = event.mouseButton.y - bug.getPosition().y;
-                  }
-            }
-            if (event.type == Event::MouseMoved) {
-                // Checks if mouse is down when it's moving to allow dragging the bug
-                if (isSelected) {
-                    bug.setPosition(Vector2f(event.mouseMove.x-bug_x, event.mouseMove.y-bug_y));
-                }
-            }
-            if (event.type == Event::MouseButtonReleased) {
-                // sets is selected to false when mouse is released
-                if (isSelected) {
-                    // snap bug to grid
-                    int mx = (event.mouseButton.x/60)*60;
-                    int my = (event.mouseButton.y/60)*60;
-                    bug.setPosition(Vector2f(mx, my)); // Set the bug's new position
-                    isSelected=false; // Unselect the bug
-                }
-            }
-            // checks if any key is pressed
-            if (event.type == Event::KeyPressed) {
-                // checks if up key is pressed
-                if (event.key.code == Keyboard::Key::Up) {
-                    if (bug.getPosition().y >=60) {
-                        bug.setPosition(bug.getPosition().x,bug.getPosition().y-60); // moves bug up
-                    }
-                }
-                // checks if up key is pressed
-                if (event.key.code == Keyboard::Key::Down) {
-                    if (bug.getPosition().y <=535) {
-                        bug.setPosition(bug.getPosition().x,bug.getPosition().y+60); // moves bug down
-                    }
-                }
-                // checks if up key is pressed
-                if (event.key.code == Keyboard::Key::Left) {
-                    if (bug.getPosition().x >=60 ) {
-                        bug.setPosition(bug.getPosition().x-60,bug.getPosition().y); // moves bug left
-                    }
-                }
-                // checks if up key is pressed
-                if (event.key.code == Keyboard::Key::Right) {
-                    if (bug.getPosition().x <=535) {
-                        bug.setPosition(bug.getPosition().x+60,bug.getPosition().y); // moves bug right
-                    }
-                }
-            }
-        }
-
-        window.clear(Color(34, 139, 34)); // sets window with darker grass green background
-
-        // draw all tiles
-        for (RectangleShape &rect: tiles) {
-            window.draw(rect);
-        }
-        window.draw(bug); // draw bug
-        window.display(); // display all that's been drawn
-    }
-
-    return 0;
-}
-
-int sfmlApplication() {
-    srand(time(NULL));
-    sf::RenderWindow window(sf::VideoMode(400, 400), "SFML works!");
-    //    sf::CircleShape shape(10.f);
-    //    window.setFramerateLimit(40);
-    //    shape.setPosition(195, 195);
-    //    shape.setFillColor(sf::Color::Green);
-    //    int moveXBy = 5;
-    //    int moveYBy = 5;
-    //    bool isGreen = true;
-    vector<ball> balls;
-    for(int i  = 0; i < 3; i++) {
-        balls.push_back(ball(i, 50));
-    }
-    int size = 8;
-    vector<sf::RectangleShape> board;
-    bool blk = true;
-    for(int x = 0; x < size; x++)
-    {
-        for(int y = 0; y < size; y++)
-        {
-            sf::RectangleShape rect(sf::Vector2f(50,50));
-            rect.setPosition(x*50, y*50);
-            if(blk)
-            {
-                rect.setFillColor(sf::Color::Black);
-
-            }
-            else
-            {
-                rect.setFillColor(sf::Color::White);
-            }
-            blk = !blk;
-            board.push_back(rect);
-        }
-        blk = !blk;
-    }
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-            if(event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    for(ball &b: balls) {
-                        b.move();
-                    }
-                }
-
-            }
-            if(event.type == sf::Event::KeyReleased)
-            {
-                cout << event.key.code << endl;
-                cout << sf::Keyboard::C << endl;
-                if(event.key.code == sf::Keyboard::Up)
-                {
-                    for(ball &b: balls) {
-                        b.move();
-                    }
-                }
-            }
-            //            if(event.type == sf::Event::MouseButtonReleased)
-            //            {
-            //                if(event.mouseButton.button == sf::Mouse::Left)
-            //                {
-            //                    if(isGreen)
-            //                    {
-            //                        shape.setFillColor(sf::Color::Red);
-            //                        isGreen=false;
-            //                    }
-            //                    else
-            //                    {
-            //                        shape.setFillColor(sf::Color::Green);
-            //                        isGreen=true;
-            //                    }
-            //                }
-            //            }
-
-        }
-        //        shape.move(moveXBy, moveYBy);
-        //        if(shape.getPosition().x >=380 ||shape.getPosition().x <5 )
-        //        {
-        //            moveXBy*=-1;
-        //        }
-        //        if(shape.getPosition().y >=380 ||shape.getPosition().y <10 )
-        //        {
-        //            moveYBy*=-1;
-        //        }
-
-        window.clear(sf::Color::White);
-        for(sf::RectangleShape &rect : board)
-        {
-            window.draw(rect);
-        }
-
-        for(ball &b: balls) {
-
-            b.draw(window);
-        }
-        window.display();
-
-    }
-
-    return 0;
-}
+// int sfmlApplication() {
+//     srand(time(NULL));
+//     sf::RenderWindow window(sf::VideoMode(400, 400), "SFML works!");
+//     //    sf::CircleShape shape(10.f);
+//     //    window.setFramerateLimit(40);
+//     //    shape.setPosition(195, 195);
+//     //    shape.setFillColor(sf::Color::Green);
+//     //    int moveXBy = 5;
+//     //    int moveYBy = 5;
+//     //    bool isGreen = true;
+//     vector<ball> balls;
+//     for(int i  = 0; i < 3; i++) {
+//         balls.push_back(ball(i, 50));
+//     }
+//     int size = 8;
+//     vector<sf::RectangleShape> board;
+     // bool blk = true;
+     // for(int x = 0; x < size; x++)
+     // {
+     //     for(int y = 0; y < size; y++)
+     //     {
+     //         sf::RectangleShape rect(sf::Vector2f(50,50));
+     //         rect.setPosition(x*50, y*50);
+     //         if(blk)
+     //         {
+     //             rect.setFillColor(sf::Color::Black);
+     //
+     //         }
+     //         else
+     //         {
+     //             rect.setFillColor(sf::Color::White);
+     //         }
+     //         blk = !blk;
+     //         board.push_back(rect);
+     //     }
+     //     blk = !blk;
+     // }
+//     while (window.isOpen())
+//     {
+//         sf::Event event;
+//         while (window.pollEvent(event))
+//         {
+//             if (event.type == sf::Event::Closed)
+//                 window.close();
+//             if(event.type == sf::Event::MouseButtonReleased) {
+//                 if (event.mouseButton.button == sf::Mouse::Left) {
+//                     for(ball &b: balls) {
+//                         b.move();
+//                     }
+//                 }
+//
+//             }
+//             if(event.type == sf::Event::KeyReleased)
+//             {
+//                 cout << event.key.code << endl;
+//                 cout << sf::Keyboard::C << endl;
+//                 if(event.key.code == sf::Keyboard::Up)
+//                 {
+//                     for(ball &b: balls) {
+//                         b.move();
+//                     }
+//                 }
+//             }
+//             //            if(event.type == sf::Event::MouseButtonReleased)
+//             //            {
+//             //                if(event.mouseButton.button == sf::Mouse::Left)
+//             //                {
+//             //                    if(isGreen)
+//             //                    {
+//             //                        shape.setFillColor(sf::Color::Red);
+//             //                        isGreen=false;
+//             //                    }
+//             //                    else
+//             //                    {
+//             //                        shape.setFillColor(sf::Color::Green);
+//             //                        isGreen=true;
+//             //                    }
+//             //                }
+//             //            }
+//
+//         }
+//         //        shape.move(moveXBy, moveYBy);
+//         //        if(shape.getPosition().x >=380 ||shape.getPosition().x <5 )
+//         //        {
+//         //            moveXBy*=-1;
+//         //        }
+//         //        if(shape.getPosition().y >=380 ||shape.getPosition().y <10 )
+//         //        {
+//         //            moveYBy*=-1;
+//         //        }
+//
+//         window.clear(sf::Color::White);
+//         for(sf::RectangleShape &rect : board)
+//         {
+//             window.draw(rect);
+//         }
+//
+//         for(ball &b: balls) {
+//
+//             b.draw(window);
+//         }
+//         window.display();
+//
+//     }
+//
+//     return 0;
+// }
 
 void displayMenu()
 {

@@ -3,6 +3,8 @@
 #include <list>
 #include <set>
 
+using namespace sf;
+
 Board::Board() : bugs() {
 }
 
@@ -84,7 +86,7 @@ void Board::displayBoard() {
     }
 }
 
-// Displays life history of every bug. The path they took, who they were eaten by, their status and more...
+// Displays life history of every superbug. The path they took, who they were eaten by, their status and more...
 void Board::displayLifeHistory() {
     for (auto &bug: bugs) {
         bug->display();
@@ -203,4 +205,158 @@ void Board::updateCells() {
     if (fightsOccured <= 0) {
         cout << "No bugs have fought or eaten each other during this tap!" << endl;
     }
+}
+
+int Board::runMoveableSFMLApplication()
+{
+    RenderWindow window(VideoMode(600, 600), "BugsLife SFML Simulator"); // Creates size of window
+    vector<RectangleShape> tiles;
+    vector<Sprite> sfmlBugs; // Vector to store the sprites for the bugs
+
+    Texture superbugTexture;
+    superbugTexture.loadFromFile("super-bug.jpg"); // Sets image of superbug
+    Sprite superbug; // Create a sprite for the bug
+    superbug.setTexture(superbugTexture); // Sets the bug's texture to the loaded image
+
+    float cellSize = 60;
+    Vector2u textureSize = superbugTexture.getSize(); // To get the dimensions of the image being used so that we can scale it down to be 1 cell big
+    superbug.setScale(cellSize / textureSize.x, cellSize / textureSize.y); // Because image is too big
+    superbug.setPosition(1, 1); // Initial position (can be updated later for dragging)
+
+    Texture crawlerTexture;
+    Texture hopperTexture;
+    crawlerTexture.loadFromFile("crawler.png");
+    hopperTexture.loadFromFile("hopper.jpeg");
+
+    if (!crawlerTexture.loadFromFile("crawler.png")) {
+        std::cerr << "Failed to load crawler texture!" << std::endl;
+    }
+    if (!hopperTexture.loadFromFile("hopper.jpeg")) {
+        std::cerr << "Failed to load hopper texture!" << std::endl;
+    }
+
+    // Loop through the bugs and create sprites for each one
+    for (auto &bug : bugs) {
+        Sprite sfmlBug; // sprite for the other bug types
+        std::cout << "Bug type: " << bug->getType() << std::endl;
+
+        // Assign texture based on the type of bug
+        if (bug->getType() == "Crawler") {
+            sfmlBug.setTexture(crawlerTexture);
+            textureSize = crawlerTexture.getSize();
+        } else if (bug->getType() == "Hopper") {
+            sfmlBug.setTexture(hopperTexture);
+            textureSize = hopperTexture.getSize();
+        }
+
+        sfmlBug.setScale(cellSize / textureSize.x, cellSize / textureSize.y); // Scale bug to fit grid cell
+        sfmlBug.setPosition(bug->getPosition().x * cellSize, bug->getPosition().y * cellSize); // Set position based on the bug's position
+        sfmlBugs.push_back(sfmlBug); // Store the sprite in the vector
+    }
+
+    window.setFramerateLimit(60); // Limit frame rate to 60 frames per second
+
+    bool isSelected = false; // Flag to track if the bug is selected
+    int bug_x, bug_y; // Variables to store the bug's position offsets when being dragged
+
+    bool brown = true;
+    for(int x = 0; x < 10; x++)
+    {
+        for(int y = 0; y < 10; y++)
+        {
+            RectangleShape tile(Vector2f(60,60));
+            tile.setPosition(x*60, y*60);
+            if(brown)
+            {
+                tile.setFillColor(Color(139, 69, 19));
+
+            }
+            else
+            {
+                tile.setFillColor(Color(34, 139, 34));
+            }
+            brown = !brown;
+            tiles.push_back(tile);
+        }
+        brown = !brown;
+    }
+
+    while (window.isOpen()) {
+        Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed) // if close button pressed -> close
+                window.close();
+            if (event.type == Event::MouseButtonPressed) {
+                // Check if the mouse click is on the bug
+                if (event.mouseButton.x > superbug.getPosition().x &&
+                    event.mouseButton.x < superbug.getPosition().x + 60
+                    && event.mouseButton.y > superbug.getPosition().y &&
+                    event.mouseButton.y < superbug.getPosition().y + 60) {
+                    isSelected = true; // Mark the bug as selected
+                    bug_x = event.mouseButton.x - superbug.getPosition().x;
+                    bug_y = event.mouseButton.y - superbug.getPosition().y;
+                }
+            }
+            if (event.type == Event::MouseMoved) {
+                // Checks if mouse is down when it's moving to allow dragging the bug
+                if (isSelected) {
+                    superbug.setPosition(Vector2f(event.mouseMove.x - bug_x, event.mouseMove.y - bug_y));
+                }
+            }
+            if (event.type == Event::MouseButtonReleased) {
+                // sets is selected to false when mouse is released
+                if (isSelected) {
+                    // snap bug to grid
+                    int mx = (event.mouseButton.x / 60) * 60;
+                    int my = (event.mouseButton.y / 60) * 60;
+                    superbug.setPosition(Vector2f(mx, my)); // Set the bug's new position
+                    isSelected = false; // Unselect the bug
+                }
+            }
+            // checks if any key is pressed
+            if (event.type == Event::KeyPressed) {
+                // checks if up key is pressed
+                if (event.key.code == Keyboard::Key::Up) {
+                    if (superbug.getPosition().y >= 60) {
+                        superbug.setPosition(superbug.getPosition().x, superbug.getPosition().y - 60); // moves bug up
+                    }
+                }
+                // checks if down key is pressed
+                if (event.key.code == Keyboard::Key::Down) {
+                    if (superbug.getPosition().y <= 535) {
+                        superbug.setPosition(superbug.getPosition().x, superbug.getPosition().y + 60); // moves bug down
+                    }
+                }
+                // checks if left key is pressed
+                if (event.key.code == Keyboard::Key::Left) {
+                    if (superbug.getPosition().x >= 60) {
+                        superbug.setPosition(superbug.getPosition().x - 60, superbug.getPosition().y); // moves bug left
+                    }
+                }
+                // checks if right key is pressed
+                if (event.key.code == Keyboard::Key::Right) {
+                    if (superbug.getPosition().x <= 535) {
+                        superbug.setPosition(superbug.getPosition().x + 60, superbug.getPosition().y); // moves bug right
+                    }
+                }
+            }
+        }
+
+        window.clear(Color(34, 139, 34)); // sets window with darker grass green background
+
+        // draw all tiles
+        for (RectangleShape &rect : tiles) {
+            window.draw(rect);
+        }
+
+        // Draw all bugs
+        for (auto &bug : sfmlBugs) {
+            window.draw(bug); // Draw each bug sprite
+        }
+
+        window.draw(superbug); // Draw the superbug (if needed)
+        window.display(); // display all that's been drawn
+    }
+
+    return 0;
 }

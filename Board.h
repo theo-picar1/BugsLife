@@ -9,6 +9,8 @@
 #include "Cell.h"
 #include <vector>
 
+#include <SFML/Graphics.hpp>
+
 class Board {
     vector<vector<Cell*>> board;
 
@@ -27,6 +29,7 @@ public:
     void runSimulation();
     Cell *getCell(int x, int y);
     void updateCells();
+    int runMoveableSFMLApplication();
 };
 
 #endif //BOARD_H
