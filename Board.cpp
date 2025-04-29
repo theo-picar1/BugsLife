@@ -212,28 +212,22 @@ int Board::runMoveableSFMLApplication()
     vector<RectangleShape> tiles;
     vector<Sprite> sfmlBugs; // Vector to keep track of every single bug that appears on the board. This is mainly for clearing the old positions
 
-    Texture superbugTexture;
-    superbugTexture.loadFromFile("super-bug.jpg");
+    Texture playerTexture;
+    playerTexture.loadFromFile("player.jpg");
     Sprite superbug;
-    superbug.setTexture(superbugTexture);
+    superbug.setTexture(playerTexture);
 
     float cellSize = 60;
-    Vector2u textureSize = superbugTexture.getSize(); // To get the dimensions of the image being used so that we can scale it down to be 1 cell big
+    Vector2u textureSize = playerTexture.getSize(); // To get the dimensions of the image being used so that we can scale it down to be 1 cell big
     superbug.setScale(cellSize / textureSize.x, cellSize / textureSize.y); // Because image is too big
     superbug.setPosition(1, 1); // Initial position (can be updated later for dragging)
 
     Texture crawlerTexture;
     Texture hopperTexture;
-    crawlerTexture.loadFromFile("crawler.png");
-    hopperTexture.loadFromFile("hopper.jpeg");
-
-    // Just some error checking
-    if (!crawlerTexture.loadFromFile("crawler.png")) {
-        std::cerr << "Failed to load crawler texture!" << std::endl;
-    }
-    if (!hopperTexture.loadFromFile("hopper.jpeg")) {
-        std::cerr << "Failed to load hopper texture!" << std::endl;
-    }
+    Texture superbugTexture;
+    crawlerTexture.loadFromFile("crawler.jpg");
+    hopperTexture.loadFromFile("hopper.jpg");
+    superbugTexture.loadFromFile("super-bug.jpg");
 
     // Loop through the bugs and create new sprites for each one to push into the sfmlSprites vector
     for (auto &bug : bugs) {
@@ -247,7 +241,11 @@ int Board::runMoveableSFMLApplication()
         } else if (bug->getType() == "Hopper") {
             sfmlBug.setTexture(hopperTexture);
             textureSize = hopperTexture.getSize();
+        } else if (bug->getType() == "SuperBug") {
+            sfmlBug.setTexture(superbugTexture);
+            textureSize = superbugTexture.getSize();
         }
+
 
         if (bug->isAlive()) {
             sfmlBug.setScale(cellSize / textureSize.x, cellSize / textureSize.y); // set sze for this particular bug
@@ -313,6 +311,9 @@ int Board::runMoveableSFMLApplication()
                     else if (bug->getType() == "Hopper") {
                         sfmlBug.setTexture(hopperTexture);
                         textureSize = hopperTexture.getSize();
+                    }else if (bug->getType() == "SuperBug") {
+                        sfmlBug.setTexture(superbugTexture);
+                        textureSize = superbugTexture.getSize();
                     }
 
                     if (!bug->isAlive()) {

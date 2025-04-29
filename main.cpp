@@ -20,7 +20,6 @@ void load(vector<Bug *> &bugs, const string &file_name);
 void parseLine(const string &line, Bug* &bug);
 void createFileHistory(Board *board);
 void displayMenu();
-// int sfmlApplication();
 int runMoveableSFMLApplication();
 
 struct ball
@@ -118,10 +117,7 @@ void menu(Board *board)
             board->runSimulation();
             break;
         case 7:
-            cout << "Runing SFML Application..." << endl;
-            // sfmlApplication();
-        case 9: // This is temporary just didn't want to touch your code
-            cout << "Runing SFML Application..." << endl;
+            cout << "Running SFML Application..." << endl;
             board->runMoveableSFMLApplication();
         case 8:
             cout << "Ending simulation... Done! Goodbye." << endl;
