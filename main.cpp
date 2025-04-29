@@ -347,8 +347,7 @@ void displayMenu()
          << "4. Display bug life history" << endl
          << "5. Display board (All cells)" << endl
          << "6. Run simulation" << endl
-         << "7. Run SFML Application" << endl
-         << "9. Run moveable bug SFML Application" << endl
+         << "7. Run moveable bug SFML Application" << endl
          << "8. Exit" << endl
          << "*************************************************" << endl;
 }
